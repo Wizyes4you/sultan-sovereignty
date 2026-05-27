@@ -12,12 +12,26 @@ interface PiPayment {
   to_address: string;
 }
 
+export interface PiPaymentData {
+  amount: number;
+  memo: string;
+  metadata: Record<string, unknown>;
+}
+
+interface PiPaymentCallbacks {
+  onReadyForServerApproval: (paymentId: string) => void;
+  onReadyForServerCompletion: (paymentId: string, txid: string) => void;
+  onCancel: (paymentId: string) => void;
+  onError: (error: Error, payment?: unknown) => void;
+}
+
 interface PiSDK {
   init: (opts: { version: string; sandbox?: boolean }) => Promise<void> | void;
   authenticate: (
     scopes: string[],
     onIncompletePaymentFound: (payment: PiPayment) => void,
   ) => Promise<PiAuthResult>;
+  createPayment: (data: PiPaymentData, callbacks: PiPaymentCallbacks) => void;
 }
 
 declare global {
@@ -77,4 +91,42 @@ export async function establishSession(accessToken: string) {
     throw new Error(`Session failed (${res.status}): ${text}`);
   }
   return res.json() as Promise<{ uid: string; username: string }>;
+}
+
+export async function createPiPayment(data: PiPaymentData): Promise<{ paymentId: string; txid: string }> {
+  await initPi();
+  const Pi = await waitForPi();
+  return new Promise((resolve, reject) => {
+    Pi.createPayment(data, {
+      onReadyForServerApproval: async (paymentId) => {
+        try {
+          const res = await fetch("/api/payments/approve", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ paymentId }),
+          });
+          if (!res.ok) throw new Error(`approve failed: ${res.status} ${await res.text()}`);
+        } catch (e) {
+          reject(e);
+        }
+      },
+      onReadyForServerCompletion: async (paymentId, txid) => {
+        try {
+          const res = await fetch("/api/payments/complete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ paymentId, txid }),
+          });
+          if (!res.ok) throw new Error(`complete failed: ${res.status} ${await res.text()}`);
+          resolve({ paymentId, txid });
+        } catch (e) {
+          reject(e);
+        }
+      },
+      onCancel: (paymentId) => reject(new Error(`Payment cancelled: ${paymentId}`)),
+      onError: (error) => reject(error),
+    });
+  });
 }
