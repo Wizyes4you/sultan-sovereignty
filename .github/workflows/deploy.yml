@@ -1,4 +1,4 @@
-name: Deploy Sultan Sovereignty Platform
+name: Live Deploy Sultan Sovereignty Platform
 
 on:
   push:
