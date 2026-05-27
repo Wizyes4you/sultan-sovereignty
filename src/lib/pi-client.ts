@@ -12,12 +12,26 @@ interface PiPayment {
   to_address: string;
 }
 
+export interface PiPaymentData {
+  amount: number;
+  memo: string;
+  metadata: Record<string, unknown>;
+}
+
+interface PiPaymentCallbacks {
+  onReadyForServerApproval: (paymentId: string) => void;
+  onReadyForServerCompletion: (paymentId: string, txid: string) => void;
+  onCancel: (paymentId: string) => void;
+  onError: (error: Error, payment?: unknown) => void;
+}
+
 interface PiSDK {
   init: (opts: { version: string; sandbox?: boolean }) => Promise<void> | void;
   authenticate: (
     scopes: string[],
     onIncompletePaymentFound: (payment: PiPayment) => void,
   ) => Promise<PiAuthResult>;
+  createPayment: (data: PiPaymentData, callbacks: PiPaymentCallbacks) => void;
 }
 
 declare global {
