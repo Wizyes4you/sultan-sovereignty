@@ -1,0 +1,57 @@
+name: Deploy Sultan Sovereignty Platform
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Project Dependencies
+        run: npm install
+
+      - name: Purge & Build Vite Production Bundle
+        run: npm run build
+
+      - name: Ensure Plain Text Validation Key Security
+        run: |
+          if [ -f public/validation-key.txt ]; then
+            cp public/validation-key.txt dist/validation-key.txt
+          fi
+
+      - name: Setup GitHub Pages Configuration
+        uses: actions/configure-pages@v4
+
+      - name: Upload Production Assets Bundle
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+      - name: Execute Live Deployment to Domain URL
+        id: deployment
+        uses: actions/deploy-pages@v4
+        
