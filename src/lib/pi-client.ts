@@ -1,0 +1,80 @@
+// Pi Browser SDK client wrapper. Only usable inside the Pi Browser.
+export interface PiAuthResult {
+  accessToken: string;
+  user: { uid: string; username: string };
+}
+
+interface PiPayment {
+  identifier: string;
+  amount: number;
+  memo: string;
+  metadata: object;
+  to_address: string;
+}
+
+interface PiSDK {
+  init: (opts: { version: string; sandbox?: boolean }) => Promise<void> | void;
+  authenticate: (
+    scopes: string[],
+    onIncompletePaymentFound: (payment: PiPayment) => void,
+  ) => Promise<PiAuthResult>;
+}
+
+declare global {
+  interface Window {
+    Pi?: PiSDK;
+  }
+}
+
+const SANDBOX = false; // Mainnet
+
+let initPromise: Promise<void> | null = null;
+
+function waitForPi(timeoutMs = 8000): Promise<PiSDK> {
+  return new Promise((resolve, reject) => {
+    const start = Date.now();
+    const tick = () => {
+      if (typeof window !== "undefined" && window.Pi) return resolve(window.Pi);
+      if (Date.now() - start > timeoutMs) {
+        return reject(new Error("Pi SDK not available. Open this app inside the Pi Browser."));
+      }
+      setTimeout(tick, 100);
+    };
+    tick();
+  });
+}
+
+export async function initPi(): Promise<void> {
+  if (!initPromise) {
+    initPromise = (async () => {
+      const Pi = await waitForPi();
+      await Pi.init({ version: "2.0", sandbox: SANDBOX });
+    })();
+  }
+  return initPromise;
+}
+
+function onIncompletePaymentFound(payment: PiPayment) {
+  // Hand off to the backend to complete; placeholder for now.
+  console.warn("[Pi] Incomplete payment found:", payment.identifier);
+}
+
+export async function authenticatePi(): Promise<PiAuthResult> {
+  await initPi();
+  const Pi = await waitForPi();
+  return Pi.authenticate(["username"], onIncompletePaymentFound);
+}
+
+export async function establishSession(accessToken: string) {
+  const res = await fetch("/api/establish-session", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ accessToken }),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Session failed (${res.status}): ${text}`);
+  }
+  return res.json() as Promise<{ uid: string; username: string }>;
+}
