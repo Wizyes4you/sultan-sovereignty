@@ -92,3 +92,41 @@ export async function establishSession(accessToken: string) {
   }
   return res.json() as Promise<{ uid: string; username: string }>;
 }
+
+export async function createPiPayment(data: PiPaymentData): Promise<{ paymentId: string; txid: string }> {
+  await initPi();
+  const Pi = await waitForPi();
+  return new Promise((resolve, reject) => {
+    Pi.createPayment(data, {
+      onReadyForServerApproval: async (paymentId) => {
+        try {
+          const res = await fetch("/api/payments/approve", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ paymentId }),
+          });
+          if (!res.ok) throw new Error(`approve failed: ${res.status} ${await res.text()}`);
+        } catch (e) {
+          reject(e);
+        }
+      },
+      onReadyForServerCompletion: async (paymentId, txid) => {
+        try {
+          const res = await fetch("/api/payments/complete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ paymentId, txid }),
+          });
+          if (!res.ok) throw new Error(`complete failed: ${res.status} ${await res.text()}`);
+          resolve({ paymentId, txid });
+        } catch (e) {
+          reject(e);
+        }
+      },
+      onCancel: (paymentId) => reject(new Error(`Payment cancelled: ${paymentId}`)),
+      onError: (error) => reject(error),
+    });
+  });
+}
