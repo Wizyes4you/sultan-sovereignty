@@ -1,0 +1,71 @@
+name: Deploy Sultan Sovereignty Platform
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.1.7
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: ./package-lock.json
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Verify Build Output
+        run: |
+          if [ ! -d "dist" ] || [ -z "$(ls -A dist)" ]; then
+            echo "❌ Build failed: dist directory is empty"
+            exit 1
+          fi
+          echo "✓ Build verification passed"
+
+      - name: Copy Validation Key
+        run: |
+          if [ -f public/validation-key.txt ]; then
+            cp public/validation-key.txt dist/validation-key.txt
+            echo "✓ Validation key copied successfully"
+          else
+            echo "⚠ Warning: validation-key.txt not found in public directory"
+          fi
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4.0.0
+
+      - name: Upload Artifacts
+        uses: actions/upload-pages-artifact@v3.0.1
+        with:
+          path: './dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4.0.5
+
