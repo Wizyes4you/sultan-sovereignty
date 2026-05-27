@@ -23,22 +23,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4.1.7
-        with:
-          fetch-depth: 1
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4.0.2
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install Dependencies
+      - name: Install Project Dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Build
+      - name: Build Production Assets
         run: npm run build
 
-      - name: Verify Build Output
+      - name: Verify Build Output Directory
         run: |
           if [ ! -d "dist" ] || [ -z "$(ls -A dist)" ]; then
             echo "❌ Build failed: dist directory is empty"
@@ -46,7 +44,7 @@ jobs:
           fi
           echo "✓ Build verification passed"
 
-      - name: Copy Validation Key
+      - name: Process Domain Validation Key
         run: |
           if [ -f public/validation-key.txt ]; then
             cp public/validation-key.txt dist/validation-key.txt
@@ -55,15 +53,15 @@ jobs:
             echo "⚠ Warning: validation-key.txt not found in public directory"
           fi
 
-      - name: Setup GitHub Pages
-        uses: actions/configure-pages@v4.0.0
+      - name: Configure GitHub Pages Hosting
+        uses: actions/configure-pages@v5
 
-      - name: Upload Artifacts
-        uses: actions/upload-pages-artifact@v3.0.1
+      - name: Upload Build Artifacts
+        uses: actions/upload-pages-artifact@v3
         with:
           path: './dist'
 
-      - name: Deploy to GitHub Pages
+      - name: Execute Live Deployment
         id: deployment
-        uses: actions/deploy-pages@v4.0.5
+        uses: actions/deploy-pages@v4
         
