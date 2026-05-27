@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiEstablishSessionRouteImport } from './routes/api/establish-session'
+import { Route as ApiPaymentsApproveRouteImport } from './routes/api/payments/approve'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const ApiEstablishSessionRoute = ApiEstablishSessionRouteImport.update({
   path: '/api/establish-session',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPaymentsApproveRoute = ApiPaymentsApproveRouteImport.update({
+  id: '/api/payments/approve',
+  path: '/api/payments/approve',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/establish-session': typeof ApiEstablishSessionRoute
+  '/api/payments/approve': typeof ApiPaymentsApproveRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/establish-session': typeof ApiEstablishSessionRoute
+  '/api/payments/approve': typeof ApiPaymentsApproveRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/establish-session': typeof ApiEstablishSessionRoute
+  '/api/payments/approve': typeof ApiPaymentsApproveRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/establish-session'
+  fullPaths: '/' | '/api/establish-session' | '/api/payments/approve'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/establish-session'
-  id: '__root__' | '/' | '/api/establish-session'
+  to: '/' | '/api/establish-session' | '/api/payments/approve'
+  id: '__root__' | '/' | '/api/establish-session' | '/api/payments/approve'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiEstablishSessionRoute: typeof ApiEstablishSessionRoute
+  ApiPaymentsApproveRoute: typeof ApiPaymentsApproveRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiEstablishSessionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/payments/approve': {
+      id: '/api/payments/approve'
+      path: '/api/payments/approve'
+      fullPath: '/api/payments/approve'
+      preLoaderRoute: typeof ApiPaymentsApproveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiEstablishSessionRoute: ApiEstablishSessionRoute,
+  ApiPaymentsApproveRoute: ApiPaymentsApproveRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
