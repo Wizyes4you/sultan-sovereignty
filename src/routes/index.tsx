@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { authenticatePi, establishSession, initPi } from "@/lib/pi-client";
+import { PiPaymentButton } from "@/components/PiPaymentButton";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -61,8 +62,20 @@ function Index() {
       </div>
 
       {user ? (
-        <div className="rounded-md border bg-card px-4 py-3 text-sm">
-          Signed in as <span className="font-medium">@{user.username}</span>
+        <div className="w-full max-w-sm space-y-6">
+          <div className="rounded-md border bg-card px-4 py-3 text-sm">
+            Signed in as <span className="font-medium">@{user.username}</span>
+          </div>
+
+          <div className="rounded-md border border-primary/20 bg-primary/5 p-4">
+            <h2 className="text-sm font-semibold text-foreground">Humanitarian Reconstruction Contribution</h2>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Support sovereign validation through Pi Network. Your contribution helps fund humanitarian reconstruction efforts via Stellar-based transactions.
+            </p>
+            <div className="mt-4">
+              <PiPaymentButton userId={user.uid} userName={user.username} />
+            </div>
+          </div>
         </div>
       ) : (
         <button
