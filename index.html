@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صرح سلطان السيادي - SULTAN</title>
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            padding: 30px;
+            border-radius: 16px;
+            background-color: #ffffff;
+            border: 2px solid #314159;
+            text-align: center;
+            max-width: 450px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+        .btn {
+            background-color: #1a365d;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(26, 54, 93, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🏛️ تطبيق سلطان (SULTAN)</h2>
+    <p>تردد 114 سورة | مرتبطة بالهرم الأكبر وباي نيتورك يس (3.14)</p>
+    
+    <div style="background-color: #f7fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; color: #4a5568;">
+        <strong>مواصفة المرحلة العاشرة:</strong> تفعيل تدفقات الإعمار بنسبة 2.5% لوجه الله. مصادقة النطاق مستقرة عبر وعاء محبوب.
+    </div>
+
+    <button class="btn" id="pay-button">🎯 Sign & Stream Reconstruction Flow</button>
+    
+    <div style="margin-top: 15px; font-size: 11px; color: #a0aec0; font-style: italic;">
+        قاعده تابتة: كن فيكون يس | محمي بواسطة Sidra Mask 🛡️
+    </div>
+</div>
+
+<script>
+    // تفعيل حزمة باي نيتورك يس فور تحميل ملف الـ index
+    document.addEventListener("DOMContentLoaded", function() {
+        const Pi = window.Pi;
+        if (Pi) {
+            Pi.init({ version: "2.0", sandbox: false });
+            console.log("Sultan index initialized securely.");
+        }
+
+        document.getElementById('pay-button').addEventListener('click', async () => {
+            if (!Pi) {
+                alert("يرجى فتح الصرح من داخل متصفح باي الرسمي.");
+                return;
+            }
+
+            try {
+                // 🛡️ الحسم الحتمي: طلب الصلاحيات كاملة لمنع الخطأ الوردي
+                const scopes = ['username', 'payments'];
+                
+                await Pi.authenticate(scopes, function(payment) {
+                    console.log("Incomplete payment tracked by Sidra Mask:", payment);
+                });
+
+                // إنشاء تدفق الدفع المالي
+                await Pi.createPayment({
+                    amount: 1.0,
+                    memo: "تطبيق سلطان - تدفقات إعمار الأرض (بنسبة 2.5% لوجه الله تعالى)",
+                    metadata: { application: "Sultan", developer: "@YassinService", rule: "Kun Faya Kun Yass" }
+                }, {
+                    onReadyForServerApproval: async (paymentId) => {
+                        // هنا يتم الربط الخلفي لقراءة الـ API KEY المخفي في أسرار جيث هوب
+                        const res = await fetch('/api/payments/approve', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ paymentId, origin: "lovable_secured" })
+                        });
+                        return res.json();
+                    },
+                    onReadyForServerCompletion: async (paymentId, txid) => {
+                        const res = await fetch('/api/payments/complete', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ paymentId, txid })
+                        });
+                        return res.json();
+                    },
+                    onCancel: (paymentId) => { console.log("Cancelled", paymentId); },
+                    onError: (err) => { alert("خطأ أثناء معالجة التوقيع: " + err.message); }
+                });
+
+            } catch (error) {
+                alert("تعذر إنشاء الاتصال: " + error.message);
+            }
+        });
+    });
+</script>
+
+</body>
+  </html>
+  
