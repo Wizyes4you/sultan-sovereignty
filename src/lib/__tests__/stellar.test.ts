@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from "vitest";
-import { computeReconstructionSplitSync, RECONSTRUCTION_BPS } from "../stellar.functions";
+import { computeReconstructionSplitSync, RECONSTRUCTION_BPS } from "../stellar";
 
 const WALLET = "GCVRDWR2T2DFJLWF2BLN4AU7U6TKWFGAPS4T5V7GPZCTGRWWOZDS4URF";
 
