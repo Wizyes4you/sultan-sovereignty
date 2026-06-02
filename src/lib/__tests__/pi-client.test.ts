@@ -5,7 +5,6 @@ describe("pi-client", () => {
     vi.resetModules();
   });
   afterEach(() => {
-    // @ts-expect-error cleanup
     delete (globalThis as { window?: unknown }).window;
   });
 
