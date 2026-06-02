@@ -49,17 +49,22 @@ export const getAccountBalance = createServerFn({ method: "GET" })
  * Compute the donation split for an incoming transaction amount (in PI).
  * Returns the wallet and amount that must be routed to the reconstruction fund.
  */
+export function computeReconstructionSplitSync(amount: number) {
+  if (!(amount > 0) || !Number.isFinite(amount)) {
+    throw new Error("amount must be a positive finite number");
+  }
+  const donationAmount = +((amount * RECONSTRUCTION_BPS) / 10_000).toFixed(7);
+  const netAmount = +(amount - donationAmount).toFixed(7);
+  return {
+    donationAmount,
+    netAmount,
+    donationWallet: getDonationWallet(),
+    baseFeeStroops: BASE_FEE_STROOPS,
+  };
+}
+
 export const computeReconstructionSplit = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
     z.object({ amount: z.number().positive().finite() }).parse(input),
   )
-  .handler(async ({ data }) => {
-    const donationAmount = +((data.amount * RECONSTRUCTION_BPS) / 10_000).toFixed(7);
-    const netAmount = +(data.amount - donationAmount).toFixed(7);
-    return {
-      donationAmount,
-      netAmount,
-      donationWallet: getDonationWallet(),
-      baseFeeStroops: BASE_FEE_STROOPS,
-    };
-  });
+  .handler(async ({ data }) => computeReconstructionSplitSync(data.amount));
