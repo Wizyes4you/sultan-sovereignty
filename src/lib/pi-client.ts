@@ -76,7 +76,7 @@ function onIncompletePaymentFound(payment: PiPayment) {
 export async function authenticatePi(): Promise<PiAuthResult> {
   await initPi();
   const Pi = await waitForPi();
-  return Pi.authenticate(["username"], onIncompletePaymentFound);
+  return Pi.authenticate(["username", "payments"], onIncompletePaymentFound);
 }
 
 export async function establishSession(accessToken: string) {
