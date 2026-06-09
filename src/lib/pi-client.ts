@@ -1,4 +1,9 @@
 // Pi Browser SDK client wrapper. Only usable inside the Pi Browser.
+import { quoteGas, type GasQuote } from "./pi-gas";
+
+export { quoteGas } from "./pi-gas";
+export type { GasQuote } from "./pi-gas";
+
 export interface PiAuthResult {
   accessToken: string;
   user: { uid: string; username: string };
@@ -108,18 +113,38 @@ export async function establishSession(accessToken: string) {
   return res.json() as Promise<{ uid: string; username: string }>;
 }
 
-export async function createPiPayment(data: PiPaymentData): Promise<{ paymentId: string; txid: string }> {
+export async function createPiPayment(
+  data: PiPaymentData,
+): Promise<{ paymentId: string; txid: string; gas: GasQuote }> {
   await initPi();
   const Pi = await waitForPi();
+
+  // Compute the Mainnet gas quote up front so the caller (and our metadata)
+  // both record the network fee the user is about to be charged.
+  const gas = quoteGas(data.amount);
+  const enrichedData: PiPaymentData = {
+    ...data,
+    metadata: {
+      ...data.metadata,
+      gas: {
+        network: gas.network,
+        operations: gas.operations,
+        baseFeeStroops: gas.baseFeeStroops,
+        totalFeeStroops: gas.totalFeeStroops,
+        totalFeePi: gas.totalFeePi,
+      },
+    },
+  };
+
   return new Promise((resolve, reject) => {
-    Pi.createPayment(data, {
+    Pi.createPayment(enrichedData, {
       onReadyForServerApproval: async (paymentId) => {
         try {
           const res = await fetch(backendUrl("/api/payments/approve"), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
-            body: JSON.stringify({ paymentId }),
+            body: JSON.stringify({ paymentId, gas }),
           });
           if (!res.ok) throw new Error(`approve failed: ${res.status} ${await res.text()}`);
         } catch (e) {
@@ -132,10 +157,10 @@ export async function createPiPayment(data: PiPaymentData): Promise<{ paymentId:
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
-            body: JSON.stringify({ paymentId, txid }),
+            body: JSON.stringify({ paymentId, txid, gas }),
           });
           if (!res.ok) throw new Error(`complete failed: ${res.status} ${await res.text()}`);
-          resolve({ paymentId, txid });
+          resolve({ paymentId, txid, gas });
         } catch (e) {
           reject(e);
         }
@@ -145,3 +170,4 @@ export async function createPiPayment(data: PiPaymentData): Promise<{ paymentId:
     });
   });
 }
+

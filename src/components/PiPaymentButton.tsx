@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { createPiPayment } from "@/lib/pi-client";
+import { useMemo, useState } from "react";
+import { createPiPayment, quoteGas, type GasQuote } from "@/lib/pi-client";
+
 
 type PaymentStatus = "idle" | "pending" | "success" | "error";
 
@@ -13,6 +14,20 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
   const [error, setError] = useState<string | null>(null);
   const [transactionId, setTransactionId] = useState<string | null>(null);
   const [donationAmount, setDonationAmount] = useState<number | null>(null);
+  const [gas, setGas] = useState<GasQuote | null>(null);
+
+  const previewGas = useMemo(() => {
+    try {
+      // Same total the user will see at signing: 1 Pi base + 2.5% donation.
+      const donationPct = import.meta.env.VITE_PI_DONATION_PERCENTAGE
+        ? parseFloat(import.meta.env.VITE_PI_DONATION_PERCENTAGE)
+        : 2.5;
+      return quoteGas(1 + (1 * donationPct) / 100);
+    } catch {
+      return null;
+    }
+  }, []);
+
 
   const handlePayment = async () => {
     setError(null);
@@ -47,6 +62,7 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
       const result = await createPiPayment(paymentData);
 
       setTransactionId(result.txid);
+      setGas(result.gas);
       setStatus("success");
 
       // Log success metrics
@@ -55,8 +71,10 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
         txid: result.txid,
         totalAmount,
         donation: donationAmount,
+        gas: result.gas,
         metadata: paymentData.metadata,
       });
+
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
       setError(errorMessage);
@@ -124,10 +142,18 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
               <p className="text-xs font-semibold text-green-900">
                 Total Contributed: {(1 + donationAmount).toFixed(4)} Pi
               </p>
+              {gas && (
+                <p className="text-xs text-green-800">
+                  <span className="font-semibold">Network Gas Fee:</span>{" "}
+                  {gas.totalFeePi.toFixed(7)} Pi ({gas.totalFeeStroops} stroops ·{" "}
+                  {gas.operations} op)
+                </p>
+              )}
             </div>
           )}
         </div>
       )}
+
 
       {status === "error" && error && (
         <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3">
@@ -146,10 +172,18 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
       )}
 
       {status === "idle" && (
-        <p className="text-center text-xs text-muted-foreground">
-          Contribute 1 Pi + 2.5% donation to humanitarian reconstruction via Stellar Horizon
-        </p>
+        <div className="space-y-1 text-center text-xs text-muted-foreground">
+          <p>Contribute 1 Pi + 2.5% donation to humanitarian reconstruction via Stellar Horizon</p>
+          {previewGas && (
+            <p>
+              Mainnet gas: {previewGas.totalFeePi.toFixed(7)} Pi ·{" "}
+              {previewGas.baseFeeStroops} stroops/op · est. total{" "}
+              {previewGas.grossPi.toFixed(7)} Pi
+            </p>
+          )}
+        </div>
       )}
+
     </div>
   );
 }
