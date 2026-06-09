@@ -1,4 +1,9 @@
 // Pi Browser SDK client wrapper. Only usable inside the Pi Browser.
+import { quoteGas, type GasQuote } from "./pi-gas";
+
+export { quoteGas } from "./pi-gas";
+export type { GasQuote } from "./pi-gas";
+
 export interface PiAuthResult {
   accessToken: string;
   user: { uid: string; username: string };
