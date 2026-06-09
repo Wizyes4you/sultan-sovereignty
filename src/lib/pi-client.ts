@@ -42,6 +42,21 @@ declare global {
 
 const SANDBOX = false; // Mainnet
 
+// Absolute backend base URL. The app is loaded inside the Pi Browser from
+// https://sultanfacf5238.pinet.com, where relative /api/* paths resolve against
+// pinet.com (which doesn't proxy them) and return 404. We must call the
+// Lovable-hosted backend directly. Override with VITE_BACKEND_BASE_URL.
+const BACKEND_BASE_URL: string = (
+  (typeof import.meta !== "undefined" && import.meta.env?.VITE_BACKEND_BASE_URL) ||
+  "https://sultan-core.lovable.app"
+).replace(/\/+$/, "");
+
+function backendUrl(path: string): string {
+  return `${BACKEND_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
+
+
 let initPromise: Promise<void> | null = null;
 
 function waitForPi(timeoutMs = 8000): Promise<PiSDK> {
