@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { createPiPayment } from "@/lib/pi-client";
+import { useMemo, useState } from "react";
+import { createPiPayment, quoteGas, type GasQuote } from "@/lib/pi-client";
+
 
 type PaymentStatus = "idle" | "pending" | "success" | "error";
 
