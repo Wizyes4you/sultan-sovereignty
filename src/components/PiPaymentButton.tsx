@@ -14,6 +14,20 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
   const [error, setError] = useState<string | null>(null);
   const [transactionId, setTransactionId] = useState<string | null>(null);
   const [donationAmount, setDonationAmount] = useState<number | null>(null);
+  const [gas, setGas] = useState<GasQuote | null>(null);
+
+  const previewGas = useMemo(() => {
+    try {
+      // Same total the user will see at signing: 1 Pi base + 2.5% donation.
+      const donationPct = import.meta.env.VITE_PI_DONATION_PERCENTAGE
+        ? parseFloat(import.meta.env.VITE_PI_DONATION_PERCENTAGE)
+        : 2.5;
+      return quoteGas(1 + (1 * donationPct) / 100);
+    } catch {
+      return null;
+    }
+  }, []);
+
 
   const handlePayment = async () => {
     setError(null);
