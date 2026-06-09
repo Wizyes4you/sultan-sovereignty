@@ -95,7 +95,7 @@ export async function authenticatePi(): Promise<PiAuthResult> {
 }
 
 export async function establishSession(accessToken: string) {
-  const res = await fetch("/api/establish-session", {
+  const res = await fetch(backendUrl("/api/establish-session"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -115,7 +115,7 @@ export async function createPiPayment(data: PiPaymentData): Promise<{ paymentId:
     Pi.createPayment(data, {
       onReadyForServerApproval: async (paymentId) => {
         try {
-          const res = await fetch("/api/payments/approve", {
+          const res = await fetch(backendUrl("/api/payments/approve"), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -128,7 +128,7 @@ export async function createPiPayment(data: PiPaymentData): Promise<{ paymentId:
       },
       onReadyForServerCompletion: async (paymentId, txid) => {
         try {
-          const res = await fetch("/api/payments/complete", {
+          const res = await fetch(backendUrl("/api/payments/complete"), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
