@@ -62,6 +62,7 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
       const result = await createPiPayment(paymentData);
 
       setTransactionId(result.txid);
+      setGas(result.gas);
       setStatus("success");
 
       // Log success metrics
@@ -70,8 +71,10 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
         txid: result.txid,
         totalAmount,
         donation: donationAmount,
+        gas: result.gas,
         metadata: paymentData.metadata,
       });
+
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
       setError(errorMessage);
