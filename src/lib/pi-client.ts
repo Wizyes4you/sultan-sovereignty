@@ -42,6 +42,21 @@ declare global {
 
 const SANDBOX = false; // Mainnet
 
+// Absolute backend base URL. The app is loaded inside the Pi Browser from
+// https://sultanfacf5238.pinet.com, where relative /api/* paths resolve against
+// pinet.com (which doesn't proxy them) and return 404. We must call the
+// Lovable-hosted backend directly. Override with VITE_BACKEND_BASE_URL.
+const BACKEND_BASE_URL: string = (
+  (typeof import.meta !== "undefined" && import.meta.env?.VITE_BACKEND_BASE_URL) ||
+  "https://sultan-core.lovable.app"
+).replace(/\/+$/, "");
+
+function backendUrl(path: string): string {
+  return `${BACKEND_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
+
+
 let initPromise: Promise<void> | null = null;
 
 function waitForPi(timeoutMs = 8000): Promise<PiSDK> {
@@ -80,7 +95,7 @@ export async function authenticatePi(): Promise<PiAuthResult> {
 }
 
 export async function establishSession(accessToken: string) {
-  const res = await fetch("/api/establish-session", {
+  const res = await fetch(backendUrl("/api/establish-session"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -100,7 +115,7 @@ export async function createPiPayment(data: PiPaymentData): Promise<{ paymentId:
     Pi.createPayment(data, {
       onReadyForServerApproval: async (paymentId) => {
         try {
-          const res = await fetch("/api/payments/approve", {
+          const res = await fetch(backendUrl("/api/payments/approve"), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -113,7 +128,7 @@ export async function createPiPayment(data: PiPaymentData): Promise<{ paymentId:
       },
       onReadyForServerCompletion: async (paymentId, txid) => {
         try {
-          const res = await fetch("/api/payments/complete", {
+          const res = await fetch(backendUrl("/api/payments/complete"), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
