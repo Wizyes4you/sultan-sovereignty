@@ -172,10 +172,18 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
       )}
 
       {status === "idle" && (
-        <p className="text-center text-xs text-muted-foreground">
-          Contribute 1 Pi + 2.5% donation to humanitarian reconstruction via Stellar Horizon
-        </p>
+        <div className="space-y-1 text-center text-xs text-muted-foreground">
+          <p>Contribute 1 Pi + 2.5% donation to humanitarian reconstruction via Stellar Horizon</p>
+          {previewGas && (
+            <p>
+              Mainnet gas: {previewGas.totalFeePi.toFixed(7)} Pi ·{" "}
+              {previewGas.baseFeeStroops} stroops/op · est. total{" "}
+              {previewGas.grossPi.toFixed(7)} Pi
+            </p>
+          )}
+        </div>
       )}
+
     </div>
   );
 }
