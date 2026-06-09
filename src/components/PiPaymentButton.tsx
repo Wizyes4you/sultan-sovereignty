@@ -142,10 +142,18 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
               <p className="text-xs font-semibold text-green-900">
                 Total Contributed: {(1 + donationAmount).toFixed(4)} Pi
               </p>
+              {gas && (
+                <p className="text-xs text-green-800">
+                  <span className="font-semibold">Network Gas Fee:</span>{" "}
+                  {gas.totalFeePi.toFixed(7)} Pi ({gas.totalFeeStroops} stroops ·{" "}
+                  {gas.operations} op)
+                </p>
+              )}
             </div>
           )}
         </div>
       )}
+
 
       {status === "error" && error && (
         <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3">
