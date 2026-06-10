@@ -183,7 +183,8 @@ describe("Pi Mainnet payment e2e: quote · metadata · UI · RPC parity", () => 
       metadata: {},
     });
 
-    const completeResp = await mocks.fetchMock.mock.results[1].value.clone().json();
+    const completeRes: Response = await mocks.fetchMock.mock.results[1].value;
+    const completeResp = await completeRes.clone().json();
     const rpcFee = Number(completeResp.payment.transaction.fee_charged);
     expect(rpcFee).not.toBe(result.gas.totalFeeStroops);
     expect(rpcFee).toBeGreaterThan(result.gas.totalFeeStroops);
