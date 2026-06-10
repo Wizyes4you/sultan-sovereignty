@@ -158,7 +158,8 @@ describe("Pi Mainnet payment e2e: quote · metadata · UI · RPC parity", () => 
     });
 
     // 4. RPC execution parity: our quoted stroops == on-chain fee_charged.
-    const completeResp = await mocks.fetchMock.mock.results[1].value.clone().json();
+    const completeRes: Response = await mocks.fetchMock.mock.results[1].value;
+    const completeResp = await completeRes.clone().json();
     const rpcFee = Number(completeResp.payment.transaction.fee_charged);
     expect(rpcFee).toBe(result.gas.totalFeeStroops);
     expect(rpcFee / STROOPS_PER_PI).toBeCloseTo(result.gas.totalFeePi, 7);
