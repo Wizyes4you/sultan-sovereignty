@@ -112,7 +112,7 @@ function Index() {
             صرح ممرد من قوارير
           </p>
           <h1 className="sultan-gold-text text-6xl font-bold tracking-tight sm:text-7xl">
-            SULTAN
+            SULTAN<span className="sr-only"> — Solomon Palace Super-App on Pi Network</span>
           </h1>
           <p
             className="mt-3 text-2xl font-light text-amber-100/90"
