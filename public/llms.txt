@@ -1,0 +1,9 @@
+# SULTAN
+
+> SULTAN (سُلطان) — Solomon Palace super-app on the Pi Network. A crystalline interface for sovereign wallet sign-in, wisdom AI, and humanitarian reconstruction payments.
+
+SULTAN is a Pi Network application that lets verified Pi users authenticate and contribute Pi toward humanitarian reconstruction flows. Built with TanStack Start and the Pi SDK, it pairs an Arabic/English bilingual interface with the Pi payment lifecycle (server approval + completion).
+
+## Pages
+
+- [Home](/): Sign in with Pi and contribute toward humanitarian reconstruction.

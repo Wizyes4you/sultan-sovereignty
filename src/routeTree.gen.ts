@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiEstablishSessionRouteImport } from './routes/api/establish-session'
 import { Route as ApiPaymentsCompleteRouteImport } from './routes/api/payments/complete'
 import { Route as ApiPaymentsApproveRouteImport } from './routes/api/payments/approve'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -37,12 +43,14 @@ const ApiPaymentsApproveRoute = ApiPaymentsApproveRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/establish-session': typeof ApiEstablishSessionRoute
   '/api/payments/approve': typeof ApiPaymentsApproveRoute
   '/api/payments/complete': typeof ApiPaymentsCompleteRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/establish-session': typeof ApiEstablishSessionRoute
   '/api/payments/approve': typeof ApiPaymentsApproveRoute
   '/api/payments/complete': typeof ApiPaymentsCompleteRoute
@@ -50,6 +58,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/establish-session': typeof ApiEstablishSessionRoute
   '/api/payments/approve': typeof ApiPaymentsApproveRoute
   '/api/payments/complete': typeof ApiPaymentsCompleteRoute
@@ -58,18 +67,21 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/sitemap.xml'
     | '/api/establish-session'
     | '/api/payments/approve'
     | '/api/payments/complete'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/sitemap.xml'
     | '/api/establish-session'
     | '/api/payments/approve'
     | '/api/payments/complete'
   id:
     | '__root__'
     | '/'
+    | '/sitemap.xml'
     | '/api/establish-session'
     | '/api/payments/approve'
     | '/api/payments/complete'
@@ -77,6 +89,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiEstablishSessionRoute: typeof ApiEstablishSessionRoute
   ApiPaymentsApproveRoute: typeof ApiPaymentsApproveRoute
   ApiPaymentsCompleteRoute: typeof ApiPaymentsCompleteRoute
@@ -84,6 +97,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -117,6 +137,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiEstablishSessionRoute: ApiEstablishSessionRoute,
   ApiPaymentsApproveRoute: ApiPaymentsApproveRoute,
   ApiPaymentsCompleteRoute: ApiPaymentsCompleteRoute,
@@ -124,13 +145,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
