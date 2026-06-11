@@ -7,18 +7,23 @@ import { SultanBackdrop } from "@/components/SultanBackdrop";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SULTAN — صرح ممرد من قوارير" },
+      { title: "SULTAN — Solomon Palace Super-App on Pi Network" },
       {
         name: "description",
         content:
-          "SULTAN (سُلطان) — Solomon Palace super-app on Pi Network. Sovereign wallet, wisdom AI, and humanitarian reconstruction.",
+          "SULTAN (سُلطان) — a Solomon Palace super-app on the Pi Network. Sovereign Pi sign-in, wisdom AI, and humanitarian reconstruction flows in one crystalline interface.",
       },
-      { property: "og:title", content: "SULTAN — سُلطان" },
+      { property: "og:title", content: "SULTAN — Solomon Palace Super-App on Pi Network" },
       {
         property: "og:description",
-        content: "A crystalline Pi Network super-app inspired by the Palace of Solomon.",
+        content:
+          "A crystalline Pi Network super-app inspired by the Palace of Solomon — sovereign sign-in, wisdom AI, and humanitarian reconstruction.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://sultan-core.lovable.app/" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://sultan-core.lovable.app/" },
     ],
   }),
   component: Index,
