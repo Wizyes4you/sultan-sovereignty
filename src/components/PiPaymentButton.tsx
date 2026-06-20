@@ -172,10 +172,32 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
       )}
 
       {status === "idle" && (
-        <div className="space-y-1 text-center text-xs text-muted-foreground">
-          <p>Contribute 1 Pi + 2.5% donation to humanitarian reconstruction via Stellar Horizon</p>
+        <div className="space-y-2 text-xs text-muted-foreground">
+          {/* Public reconstruction metadata — visible to every pioneer before signing */}
+          <div className="rounded-md border border-amber-300/40 bg-gradient-to-br from-amber-50/10 to-amber-100/5 px-4 py-3 text-left">
+            <div className="mb-1 flex items-center justify-between">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-300">
+                إعمار · Reconstruction Split
+              </span>
+              <span className="rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-bold text-amber-200">
+                2.5%
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-1 text-[11px] text-amber-100/80">
+              <span>Base · أساس</span>
+              <span className="text-right font-mono">1.0000 Pi</span>
+              <span>Reconstruction · إعمار</span>
+              <span className="text-right font-mono">0.0250 Pi</span>
+              <span className="font-semibold">Total · مجموع</span>
+              <span className="text-right font-mono font-semibold">1.0250 Pi</span>
+            </div>
+            <p className="mt-2 border-t border-amber-300/20 pt-1.5 text-[10px] leading-relaxed text-amber-100/60">
+              The 2.5% flows transparently to humanitarian reconstruction (Gaza · Sudan)
+              and is recorded on-chain as payment metadata for every pioneer to witness.
+            </p>
+          </div>
           {previewGas && (
-            <p>
+            <p className="text-center">
               Mainnet gas: {previewGas.totalFeePi.toFixed(7)} Pi ·{" "}
               {previewGas.baseFeeStroops} stroops/op · est. total{" "}
               {previewGas.grossPi.toFixed(7)} Pi
