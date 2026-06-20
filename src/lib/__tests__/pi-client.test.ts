@@ -8,7 +8,7 @@ describe("pi-client", () => {
     delete (globalThis as { window?: unknown }).window;
   });
 
-  it("requests both 'username' and 'payments' scopes (Step 10 requirement)", async () => {
+  it("requests both 'username' and 'payments' scopes", async () => {
     const authenticate = vi.fn().mockResolvedValue({
       accessToken: "tok",
       user: { uid: "u1", username: "yassinservice" },
