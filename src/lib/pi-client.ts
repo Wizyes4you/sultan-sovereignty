@@ -88,9 +88,29 @@ export async function initPi(): Promise<void> {
   return initPromise;
 }
 
+// "Sidra Mask" protocol — every incomplete payment the Pi SDK surfaces is
+// forwarded to the backend so no transaction is lost to a closed tab or a
+// dropped connection. Fire-and-forget; we never block sign-in on telemetry.
 function onIncompletePaymentFound(payment: PiPayment) {
-  // Hand off to the backend to complete; placeholder for now.
-  console.warn("[Pi] Incomplete payment found:", payment.identifier);
+  console.warn("[Sidra Mask] Incomplete payment found:", payment.identifier);
+  try {
+    void fetch(backendUrl("/api/public/sidra-mask"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      keepalive: true,
+      body: JSON.stringify({
+        identifier: payment.identifier,
+        amount: payment.amount,
+        memo: payment.memo,
+        to_address: payment.to_address,
+        metadata: payment.metadata,
+        reportedAt: new Date().toISOString(),
+        protocol: "Sidra Mask",
+      }),
+    }).catch((e) => console.warn("[Sidra Mask] report failed:", e));
+  } catch (e) {
+    console.warn("[Sidra Mask] dispatch error:", e);
+  }
 }
 
 export async function authenticatePi(): Promise<PiAuthResult> {
