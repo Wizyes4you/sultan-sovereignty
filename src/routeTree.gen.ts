@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiEstablishSessionRouteImport } from './routes/api/establish-session'
+import { Route as ApiPublicSidraMaskRouteImport } from './routes/api/public/sidra-mask'
 import { Route as ApiPaymentsCompleteRouteImport } from './routes/api/payments/complete'
 import { Route as ApiPaymentsApproveRouteImport } from './routes/api/payments/approve'
 
@@ -28,6 +29,11 @@ const IndexRoute = IndexRouteImport.update({
 const ApiEstablishSessionRoute = ApiEstablishSessionRouteImport.update({
   id: '/api/establish-session',
   path: '/api/establish-session',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicSidraMaskRoute = ApiPublicSidraMaskRouteImport.update({
+  id: '/api/public/sidra-mask',
+  path: '/api/public/sidra-mask',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPaymentsCompleteRoute = ApiPaymentsCompleteRouteImport.update({
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/api/establish-session': typeof ApiEstablishSessionRoute
   '/api/payments/approve': typeof ApiPaymentsApproveRoute
   '/api/payments/complete': typeof ApiPaymentsCompleteRoute
+  '/api/public/sidra-mask': typeof ApiPublicSidraMaskRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/api/establish-session': typeof ApiEstablishSessionRoute
   '/api/payments/approve': typeof ApiPaymentsApproveRoute
   '/api/payments/complete': typeof ApiPaymentsCompleteRoute
+  '/api/public/sidra-mask': typeof ApiPublicSidraMaskRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,6 +70,7 @@ export interface FileRoutesById {
   '/api/establish-session': typeof ApiEstablishSessionRoute
   '/api/payments/approve': typeof ApiPaymentsApproveRoute
   '/api/payments/complete': typeof ApiPaymentsCompleteRoute
+  '/api/public/sidra-mask': typeof ApiPublicSidraMaskRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -71,6 +80,7 @@ export interface FileRouteTypes {
     | '/api/establish-session'
     | '/api/payments/approve'
     | '/api/payments/complete'
+    | '/api/public/sidra-mask'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -78,6 +88,7 @@ export interface FileRouteTypes {
     | '/api/establish-session'
     | '/api/payments/approve'
     | '/api/payments/complete'
+    | '/api/public/sidra-mask'
   id:
     | '__root__'
     | '/'
@@ -85,6 +96,7 @@ export interface FileRouteTypes {
     | '/api/establish-session'
     | '/api/payments/approve'
     | '/api/payments/complete'
+    | '/api/public/sidra-mask'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -93,6 +105,7 @@ export interface RootRouteChildren {
   ApiEstablishSessionRoute: typeof ApiEstablishSessionRoute
   ApiPaymentsApproveRoute: typeof ApiPaymentsApproveRoute
   ApiPaymentsCompleteRoute: typeof ApiPaymentsCompleteRoute
+  ApiPublicSidraMaskRoute: typeof ApiPublicSidraMaskRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -118,6 +131,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiEstablishSessionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/sidra-mask': {
+      id: '/api/public/sidra-mask'
+      path: '/api/public/sidra-mask'
+      fullPath: '/api/public/sidra-mask'
+      preLoaderRoute: typeof ApiPublicSidraMaskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/payments/complete': {
       id: '/api/payments/complete'
       path: '/api/payments/complete'
@@ -141,6 +161,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiEstablishSessionRoute: ApiEstablishSessionRoute,
   ApiPaymentsApproveRoute: ApiPaymentsApproveRoute,
   ApiPaymentsCompleteRoute: ApiPaymentsCompleteRoute,
+  ApiPublicSidraMaskRoute: ApiPublicSidraMaskRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
