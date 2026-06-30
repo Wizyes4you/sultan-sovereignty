@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiSultanCoreRouteImport } from './routes/api/sultan-core'
+import { Route as ApiReconstructionRouteImport } from './routes/api/reconstruction'
 import { Route as ApiEstablishSessionRouteImport } from './routes/api/establish-session'
 import { Route as ApiPublicSidraMaskRouteImport } from './routes/api/public/sidra-mask'
 import { Route as ApiPaymentsCompleteRouteImport } from './routes/api/payments/complete'
@@ -24,6 +26,16 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSultanCoreRoute = ApiSultanCoreRouteImport.update({
+  id: '/api/sultan-core',
+  path: '/api/sultan-core',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiReconstructionRoute = ApiReconstructionRouteImport.update({
+  id: '/api/reconstruction',
+  path: '/api/reconstruction',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiEstablishSessionRoute = ApiEstablishSessionRouteImport.update({
@@ -51,6 +63,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/establish-session': typeof ApiEstablishSessionRoute
+  '/api/reconstruction': typeof ApiReconstructionRoute
+  '/api/sultan-core': typeof ApiSultanCoreRoute
   '/api/payments/approve': typeof ApiPaymentsApproveRoute
   '/api/payments/complete': typeof ApiPaymentsCompleteRoute
   '/api/public/sidra-mask': typeof ApiPublicSidraMaskRoute
@@ -59,6 +73,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/establish-session': typeof ApiEstablishSessionRoute
+  '/api/reconstruction': typeof ApiReconstructionRoute
+  '/api/sultan-core': typeof ApiSultanCoreRoute
   '/api/payments/approve': typeof ApiPaymentsApproveRoute
   '/api/payments/complete': typeof ApiPaymentsCompleteRoute
   '/api/public/sidra-mask': typeof ApiPublicSidraMaskRoute
@@ -68,6 +84,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/establish-session': typeof ApiEstablishSessionRoute
+  '/api/reconstruction': typeof ApiReconstructionRoute
+  '/api/sultan-core': typeof ApiSultanCoreRoute
   '/api/payments/approve': typeof ApiPaymentsApproveRoute
   '/api/payments/complete': typeof ApiPaymentsCompleteRoute
   '/api/public/sidra-mask': typeof ApiPublicSidraMaskRoute
@@ -78,6 +96,8 @@ export interface FileRouteTypes {
     | '/'
     | '/sitemap.xml'
     | '/api/establish-session'
+    | '/api/reconstruction'
+    | '/api/sultan-core'
     | '/api/payments/approve'
     | '/api/payments/complete'
     | '/api/public/sidra-mask'
@@ -86,6 +106,8 @@ export interface FileRouteTypes {
     | '/'
     | '/sitemap.xml'
     | '/api/establish-session'
+    | '/api/reconstruction'
+    | '/api/sultan-core'
     | '/api/payments/approve'
     | '/api/payments/complete'
     | '/api/public/sidra-mask'
@@ -94,6 +116,8 @@ export interface FileRouteTypes {
     | '/'
     | '/sitemap.xml'
     | '/api/establish-session'
+    | '/api/reconstruction'
+    | '/api/sultan-core'
     | '/api/payments/approve'
     | '/api/payments/complete'
     | '/api/public/sidra-mask'
@@ -103,6 +127,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiEstablishSessionRoute: typeof ApiEstablishSessionRoute
+  ApiReconstructionRoute: typeof ApiReconstructionRoute
+  ApiSultanCoreRoute: typeof ApiSultanCoreRoute
   ApiPaymentsApproveRoute: typeof ApiPaymentsApproveRoute
   ApiPaymentsCompleteRoute: typeof ApiPaymentsCompleteRoute
   ApiPublicSidraMaskRoute: typeof ApiPublicSidraMaskRoute
@@ -122,6 +148,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/sultan-core': {
+      id: '/api/sultan-core'
+      path: '/api/sultan-core'
+      fullPath: '/api/sultan-core'
+      preLoaderRoute: typeof ApiSultanCoreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/reconstruction': {
+      id: '/api/reconstruction'
+      path: '/api/reconstruction'
+      fullPath: '/api/reconstruction'
+      preLoaderRoute: typeof ApiReconstructionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/establish-session': {
@@ -159,6 +199,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiEstablishSessionRoute: ApiEstablishSessionRoute,
+  ApiReconstructionRoute: ApiReconstructionRoute,
+  ApiSultanCoreRoute: ApiSultanCoreRoute,
   ApiPaymentsApproveRoute: ApiPaymentsApproveRoute,
   ApiPaymentsCompleteRoute: ApiPaymentsCompleteRoute,
   ApiPublicSidraMaskRoute: ApiPublicSidraMaskRoute,
@@ -166,13 +208,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
