@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -20,6 +21,11 @@ import { Route as ApiPublicSidraMaskRouteImport } from './routes/api/public/sidr
 import { Route as ApiPaymentsCompleteRouteImport } from './routes/api/payments/complete'
 import { Route as ApiPaymentsApproveRouteImport } from './routes/api/payments/approve'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/api/establish-session': typeof ApiEstablishSessionRoute
   '/api/reconstruction': typeof ApiReconstructionRoute
   '/api/sultan-core': typeof ApiSultanCoreRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/api/establish-session': typeof ApiEstablishSessionRoute
   '/api/reconstruction': typeof ApiReconstructionRoute
   '/api/sultan-core': typeof ApiSultanCoreRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/api/establish-session': typeof ApiEstablishSessionRoute
   '/api/reconstruction': typeof ApiReconstructionRoute
   '/api/sultan-core': typeof ApiSultanCoreRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/privacy'
     | '/sitemap.xml'
+    | '/terms'
     | '/api/establish-session'
     | '/api/reconstruction'
     | '/api/sultan-core'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/privacy'
     | '/sitemap.xml'
+    | '/terms'
     | '/api/establish-session'
     | '/api/reconstruction'
     | '/api/sultan-core'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/privacy'
     | '/sitemap.xml'
+    | '/terms'
     | '/api/establish-session'
     | '/api/reconstruction'
     | '/api/sultan-core'
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TermsRoute: typeof TermsRoute
   ApiEstablishSessionRoute: typeof ApiEstablishSessionRoute
   ApiReconstructionRoute: typeof ApiReconstructionRoute
   ApiSultanCoreRoute: typeof ApiSultanCoreRoute
@@ -162,6 +175,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -240,6 +260,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TermsRoute: TermsRoute,
   ApiEstablishSessionRoute: ApiEstablishSessionRoute,
   ApiReconstructionRoute: ApiReconstructionRoute,
   ApiSultanCoreRoute: ApiSultanCoreRoute,
