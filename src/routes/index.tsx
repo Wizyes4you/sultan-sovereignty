@@ -265,12 +265,46 @@ function Index() {
             </div>
             <div className="flex flex-col items-center gap-1">
               <span className="relative flex h-3 w-3">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/60" />
-                <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-400" />
+                <span
+                  className={`absolute inline-flex h-full w-full rounded-full ${telemetry.online ? "animate-ping bg-emerald-400/60" : "bg-red-400/60"}`}
+                />
+                <span
+                  className={`relative inline-flex h-3 w-3 rounded-full ${telemetry.online ? "bg-emerald-400" : "bg-red-400"}`}
+                />
               </span>
-              <span className="text-[9px] uppercase tracking-widest text-emerald-300/80">
-                LIVE
+              <span
+                className={`text-[9px] uppercase tracking-widest ${telemetry.online ? "text-emerald-300/80" : "text-red-300/80"}`}
+              >
+                {telemetry.online ? "LIVE" : "SYNC"}
               </span>
+            </div>
+          </div>
+
+          {/* Telemetry readout */}
+          <div className="relative mt-4 grid grid-cols-3 gap-2 border-t border-amber-300/20 pt-3 text-center">
+            <div>
+              <p className="text-[9px] uppercase tracking-widest text-amber-200/60">
+                Pulse · نبض
+              </p>
+              <p className="mt-1 font-mono text-sm font-bold text-amber-100">
+                #{telemetry.tick.toString().padStart(4, "0")}
+              </p>
+            </div>
+            <div>
+              <p className="text-[9px] uppercase tracking-widest text-sky-200/60">
+                Freq · تردد
+              </p>
+              <p className="mt-1 font-mono text-sm font-bold text-sky-100">
+                {telemetry.frequency.toFixed(2)}
+              </p>
+            </div>
+            <div>
+              <p className="text-[9px] uppercase tracking-widest text-emerald-200/60">
+                Sync · مزامنة
+              </p>
+              <p className="mt-1 font-mono text-sm font-bold text-emerald-100">
+                {telemetry.lastSync}
+              </p>
             </div>
           </div>
         </div>
