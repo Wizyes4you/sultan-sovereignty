@@ -66,6 +66,53 @@ function Index() {
   const [status, setStatus] = useState<Status>("idle");
   const [user, setUser] = useState<{ uid: string; username: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [telemetry, setTelemetry] = useState<{
+    tick: number;
+    lastSync: string;
+    frequency: number;
+    reconstructionSplit: number;
+    online: boolean;
+  }>({
+    tick: 0,
+    lastSync: "—",
+    frequency: 579.74,
+    reconstructionSplit: 0.025,
+    online: false,
+  });
+
+  // Digital Auditory Layer — ingest /api/sultan-core at 114-beat cadence (~8.77s).
+  useEffect(() => {
+    let cancelled = false;
+    const CADENCE_MS = Math.round(1000 / (114 / 1000)); // 8772ms — one pulse per 114Hz cycle window
+    const poll = async () => {
+      try {
+        const res = await fetch("/api/sultan-core", { headers: { accept: "application/json" } });
+        if (!res.ok) throw new Error(String(res.status));
+        const json = (await res.json()) as {
+          frequency: number;
+          reconstruction_split: number;
+          timestamp: string;
+        };
+        if (cancelled) return;
+        setTelemetry((prev) => ({
+          tick: prev.tick + 1,
+          lastSync: new Date(json.timestamp).toLocaleTimeString("ar-EG", { hour12: false }),
+          frequency: json.frequency,
+          reconstructionSplit: json.reconstruction_split,
+          online: true,
+        }));
+      } catch {
+        if (cancelled) return;
+        setTelemetry((prev) => ({ ...prev, online: false, tick: prev.tick + 1 }));
+      }
+    };
+    poll();
+    const id = window.setInterval(poll, CADENCE_MS);
+    return () => {
+      cancelled = true;
+      window.clearInterval(id);
+    };
+  }, []);
 
   const signIn = async () => {
     setError(null);
