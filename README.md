@@ -1,3 +1,29 @@
+
+# Sultan DApp (صرح سلطان) — Ethical Utility Ecosystem
+
+Sultan is a decentralized application (DApp) built for the Pi Network ecosystem, providing community utilities, automated Zakat management, and transparent social reconstruction logic.
+
+## 🛠️ Core Features & Architecture
+
+* **Virtual Node Hub:** Hardware-free participation layer for inclusive digital equity.
+* **Zakat & Relief Engine:** Transparent 2.5% contribution logic for social support, relief, and infrastructure.
+* **Sovereign Security Layer:** Non-custodial persistence model. Strictly zero storage of user 24-word passphrases.
+* **Multi-lingual Dashboard:** Real-time metrics presented in Arabic, English, French, and Spanish.
+
+## 🚀 Tech Stack
+
+* **Frontend:** React, TypeScript, Tailwind CSS
+* **Ecosystem Integration:** Pi SDK (`pi.js`)
+* **Deployment & Hosting:** Pi Network Domain (`https://sultanfacf5238.pinet.com`)
+* **License:** Pi Open Source (PiOS)
+
+## 🌐 Official Links
+
+* **Pi Browser Direct App:** `https://sultanfacf5238.pinet.com`
+* **Public Web Showcase:** `https://sultan-pi-sovereign.lovable.app`
+* **Developer:** Yassinservice (`Wizyes4you`)
+
+
 # 🏛️ منصة سيادة السلطان المستقلة (SULTAN)
 
 بقاعدة **"كن فيكون يس"**، هذا هو المستودع السيادي والشرعي لتطبيق **سلطان (SULTAN)** المستقل والمبني خصيصاً للتكامل مع شبكة باي نيتورك العالمية.
