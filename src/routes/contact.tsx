@@ -31,6 +31,7 @@ export const Route = createFileRoute("/contact")({
           "Contact the SULTAN team for support, feedback, or community outreach. Direct channel for Pi Network app inquiries.",
       },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { property: "og:url", content: "https://sultan-core.lovable.app/contact" },
     ],
     links: [

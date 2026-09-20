@@ -4,7 +4,12 @@ import { SultanBackdrop } from "@/components/SultanBackdrop";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "trigger" },
+      { title: "Terms of Service — SULTAN" },
+      { name: "description", content: "Terms governing access to Sultan DApp, Pi authentication, and payment utilities." },
+      { property: "og:title", content: "Terms of Service — SULTAN" },
+      { property: "og:description", content: "Terms governing access to Sultan DApp, Pi authentication, and payment utilities." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { property: "og:url", content: "https://sultan-core.lovable.app/terms" },
     ],
     links: [

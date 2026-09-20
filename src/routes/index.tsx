@@ -1,380 +1,407 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { authenticatePi, establishSession, initPi } from "@/lib/pi-client";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+  Activity,
+  ArrowUpRight,
+  Check,
+  ChevronDown,
+  CircleDollarSign,
+  Globe2,
+  LockKeyhole,
+  Moon,
+  Network,
+  ShieldCheck,
+  Sun,
+  Wallet,
+  Wrench,
+} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { PiPaymentButton } from "@/components/PiPaymentButton";
-import { SultanBackdrop } from "@/components/SultanBackdrop";
+import { Button } from "@/components/ui/button";
+import { authenticatePi, establishSession } from "@/lib/pi-client";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SULTAN — Digital Sufficiency Pact on Pi Network" },
+      { title: "Sultan DApp — Pi Network Financial Utilities" },
       {
         name: "description",
         content:
-          "SULTAN (سُلطان) — Digital Sufficiency Pact (YAS Protocol) on the Pi Network. Sovereign sign-in, 5-pillar sovereignty matrix, and 2.5% humanitarian reconstruction flow.",
+          "Sultan DApp provides non-custodial Pi Network authentication, transparent allocation metrics, and community financial utilities.",
       },
-      { property: "og:title", content: "SULTAN — Digital Sufficiency Pact on Pi Network" },
+      { property: "og:title", content: "Sultan DApp — Pi Network Financial Utilities" },
       {
         property: "og:description",
         content:
-          "Sovereign Pi Network super-app — 5-pillar sovereignty matrix with live Gaza & Sudan reconstruction core.",
+          "Connect with Pi Network to access transparent allocation metrics and community financial utilities.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://sultan-core.lovable.app/" },
+      { name: "twitter:card", content: "summary" },
     ],
     links: [{ rel: "canonical", href: "https://sultan-core.lovable.app/" }],
   }),
   component: Index,
 });
 
-type Status = "idle" | "initializing" | "signing-in" | "ready" | "error";
+type Status = "idle" | "connecting" | "ready" | "error";
+type Language = "ar" | "en" | "fr" | "es";
+type Theme = "light" | "dark";
 
-const CORE_RESONANCE = "579.74"; // 114 surahs × π × 1.571
+const COPY = {
+  en: {
+    connect: "Connect Pi Wallet",
+    connecting: "Connecting…",
+    connected: "Wallet connected",
+    eyebrow: "Pi Network financial infrastructure",
+    title: "Sultan DApp",
+    intro:
+      "A non-custodial financial utility for transparent community allocation and verified Pi transactions.",
+    overview: "Network overview",
+    updated: "Live endpoint",
+    zakatPool: "Zakat allocation",
+    reconstruction: "Community reconstruction",
+    activeNodes: "Active nodes",
+    online: "Operational",
+    offline: "Unavailable",
+    modules: "Core modules",
+    modulesIntro: "Purpose-built utilities with a clear security boundary.",
+    zakat: "Zakat Engine",
+    zakatText: "Calculates and records the 2.5% allocation within each eligible transaction.",
+    security: "Sovereign Security",
+    securityText: "Non-custodial. No wallet passphrase or private key is requested or stored.",
+    utilities: "Community Utilities",
+    utilitiesText: "Verified payment workflows and transparent public allocation data.",
+    payment: "Transaction console",
+    paymentText: "Review the allocation and network fee before confirming in Pi Wallet.",
+    connectedAs: "Connected as",
+    selectLanguage: "Select language",
+    theme: "Toggle color theme",
+  },
+  ar: {
+    connect: "ربط محفظة Pi",
+    connecting: "جارٍ الاتصال…",
+    connected: "المحفظة متصلة",
+    eyebrow: "بنية مالية لشبكة Pi",
+    title: "تطبيق سلطان",
+    intro: "أداة مالية غير احتجازية لتخصيص مجتمعي شفاف ومعاملات Pi موثّقة.",
+    overview: "نظرة عامة على الشبكة",
+    updated: "نقطة اتصال مباشرة",
+    zakatPool: "تخصيص الزكاة",
+    reconstruction: "إعمار المجتمع",
+    activeNodes: "العُقد النشطة",
+    online: "يعمل",
+    offline: "غير متاح",
+    modules: "الوحدات الأساسية",
+    modulesIntro: "أدوات متخصصة ضمن حدود أمنية واضحة.",
+    zakat: "محرك الزكاة",
+    zakatText: "يحسب ويسجل تخصيص 2.5% داخل كل معاملة مؤهلة.",
+    security: "الأمن السيادي",
+    securityText: "غير احتجازي. لا يطلب أو يخزن عبارة مرور المحفظة أو المفتاح الخاص.",
+    utilities: "خدمات المجتمع",
+    utilitiesText: "مسارات دفع موثّقة وبيانات تخصيص عامة وشفافة.",
+    payment: "وحدة المعاملات",
+    paymentText: "راجع التخصيص ورسوم الشبكة قبل التأكيد في محفظة Pi.",
+    connectedAs: "متصل باسم",
+    selectLanguage: "اختيار اللغة",
+    theme: "تبديل نمط الألوان",
+  },
+  fr: {
+    connect: "Connecter le portefeuille Pi",
+    connecting: "Connexion…",
+    connected: "Portefeuille connecté",
+    eyebrow: "Infrastructure financière Pi Network",
+    title: "Sultan DApp",
+    intro: "Un outil financier non dépositaire pour des allocations communautaires transparentes et des transactions Pi vérifiées.",
+    overview: "Vue du réseau",
+    updated: "Point d’accès actif",
+    zakatPool: "Allocation Zakat",
+    reconstruction: "Reconstruction communautaire",
+    activeNodes: "Nœuds actifs",
+    online: "Opérationnel",
+    offline: "Indisponible",
+    modules: "Modules principaux",
+    modulesIntro: "Des outils spécialisés avec une limite de sécurité claire.",
+    zakat: "Moteur Zakat",
+    zakatText: "Calcule et enregistre l’allocation de 2,5 % pour chaque transaction éligible.",
+    security: "Sécurité souveraine",
+    securityText: "Non dépositaire. Aucune phrase secrète ni clé privée n’est demandée ou stockée.",
+    utilities: "Services communautaires",
+    utilitiesText: "Paiements vérifiés et données publiques d’allocation transparentes.",
+    payment: "Console de transaction",
+    paymentText: "Vérifiez l’allocation et les frais réseau avant de confirmer dans Pi Wallet.",
+    connectedAs: "Connecté en tant que",
+    selectLanguage: "Choisir la langue",
+    theme: "Changer le thème",
+  },
+  es: {
+    connect: "Conectar billetera Pi",
+    connecting: "Conectando…",
+    connected: "Billetera conectada",
+    eyebrow: "Infraestructura financiera de Pi Network",
+    title: "Sultan DApp",
+    intro: "Una utilidad financiera sin custodia para asignaciones comunitarias transparentes y transacciones Pi verificadas.",
+    overview: "Resumen de la red",
+    updated: "Punto de acceso activo",
+    zakatPool: "Asignación Zakat",
+    reconstruction: "Reconstrucción comunitaria",
+    activeNodes: "Nodos activos",
+    online: "Operativo",
+    offline: "No disponible",
+    modules: "Módulos principales",
+    modulesIntro: "Utilidades especializadas con un límite de seguridad claro.",
+    zakat: "Motor Zakat",
+    zakatText: "Calcula y registra la asignación del 2,5 % en cada transacción elegible.",
+    security: "Seguridad soberana",
+    securityText: "Sin custodia. No se solicita ni almacena la frase de acceso o clave privada.",
+    utilities: "Servicios comunitarios",
+    utilitiesText: "Pagos verificados y datos públicos de asignación transparentes.",
+    payment: "Consola de transacción",
+    paymentText: "Revisa la asignación y la tarifa de red antes de confirmar en Pi Wallet.",
+    connectedAs: "Conectado como",
+    selectLanguage: "Elegir idioma",
+    theme: "Cambiar tema",
+  },
+} as const;
 
-const PILLARS = [
-  {
-    ar: "النصر",
-    en: "Victory",
-    sub: "Divine Protection Shield",
-    icon: "🛡️",
-    accent: "from-amber-300 to-amber-600",
-  },
-  {
-    ar: "الميزان",
-    en: "Mizan",
-    sub: "Pi Flow Verification",
-    icon: "⚖️",
-    accent: "from-sky-300 to-blue-600",
-  },
-  {
-    ar: "العرش",
-    en: "Throne",
-    sub: "Authority Lock",
-    icon: "👑",
-    accent: "from-amber-300 to-amber-600",
-  },
-  {
-    ar: "الإطلاق",
-    en: "Launch",
-    sub: "Mainnet Ready Matrix",
-    icon: "🚀",
-    accent: "from-sky-300 to-blue-600",
-  },
-];
+const LANGUAGE_LABELS: Record<Language, string> = { ar: "AR", en: "EN", fr: "FR", es: "ES" };
 
 function Index() {
   const [status, setStatus] = useState<Status>("idle");
   const [user, setUser] = useState<{ uid: string; username: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [telemetry, setTelemetry] = useState<{
-    tick: number;
-    lastSync: string;
-    frequency: number;
-    reconstructionSplit: number;
-    online: boolean;
-  }>({
-    tick: 0,
-    lastSync: "—",
-    frequency: 579.74,
-    reconstructionSplit: 0.025,
-    online: false,
-  });
+  const [language, setLanguage] = useState<Language>("en");
+  const [theme, setTheme] = useState<Theme>("dark");
+  const [online, setOnline] = useState(false);
+  const [lastSync, setLastSync] = useState("—");
 
-  // Digital Auditory Layer — ingest /api/sultan-core at 114-beat cadence (~8.77s).
+  const copy = COPY[language];
+  const isRtl = language === "ar";
+
   useEffect(() => {
-    let cancelled = false;
-    const CADENCE_MS = Math.round(1000 / (114 / 1000)); // 8772ms — one pulse per 114Hz cycle window
-    const poll = async () => {
-      try {
-        const res = await fetch("/api/sultan-core", { headers: { accept: "application/json" } });
-        if (!res.ok) throw new Error(String(res.status));
-        const json = (await res.json()) as {
-          frequency: number;
-          reconstruction_split: number;
-          timestamp: string;
-        };
-        if (cancelled) return;
-        setTelemetry((prev) => ({
-          tick: prev.tick + 1,
-          lastSync: new Date(json.timestamp).toLocaleTimeString("ar-EG", { hour12: false }),
-          frequency: json.frequency,
-          reconstructionSplit: json.reconstruction_split,
-          online: true,
-        }));
-      } catch {
-        if (cancelled) return;
-        setTelemetry((prev) => ({ ...prev, online: false, tick: prev.tick + 1 }));
-      }
-    };
-    poll();
-    const id = window.setInterval(poll, CADENCE_MS);
-    return () => {
-      cancelled = true;
-      window.clearInterval(id);
-    };
+    const storedLanguage = window.localStorage.getItem("sultan-language");
+    if (storedLanguage && storedLanguage in COPY) setLanguage(storedLanguage as Language);
+    const storedTheme = window.localStorage.getItem("sultan-theme");
+    const nextTheme =
+      storedTheme === "light" || storedTheme === "dark"
+        ? storedTheme
+        : window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+    setTheme(nextTheme);
+    document.documentElement.classList.toggle("dark", nextTheme === "dark");
   }, []);
 
-  const signIn = async () => {
+  useEffect(() => {
+    let cancelled = false;
+    const poll = async () => {
+      try {
+        const response = await fetch("/api/sultan-core", { headers: { accept: "application/json" } });
+        if (!response.ok) throw new Error(String(response.status));
+        const data = (await response.json()) as { timestamp: string };
+        if (!cancelled) {
+          setOnline(true);
+          setLastSync(new Date(data.timestamp).toLocaleTimeString(language, { hour: "2-digit", minute: "2-digit" }));
+        }
+      } catch {
+        if (!cancelled) setOnline(false);
+      }
+    };
+    void poll();
+    const interval = window.setInterval(poll, 15_000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+    };
+  }, [language]);
+
+  const connectWallet = async () => {
+    setStatus("connecting");
     setError(null);
-    setStatus("signing-in");
     try {
       const auth = await authenticatePi();
       const session = await establishSession(auth.accessToken);
       setUser(session);
       setStatus("ready");
-    } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : String(caught));
       setStatus("error");
     }
   };
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      setStatus("initializing");
-      try {
-        await initPi();
-        if (cancelled) return;
-        await signIn();
-      } catch (e) {
-        if (cancelled) return;
-        setError(e instanceof Error ? e.message : String(e));
-        setStatus("error");
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const setActiveLanguage = (next: Language) => {
+    setLanguage(next);
+    window.localStorage.setItem("sultan-language", next);
+  };
 
-  const statusLabel =
-    status === "initializing"
-      ? "يُهيِّئ سدرة المنتهى الرقمية…"
-      : status === "signing-in"
-        ? "يدخل القصر…"
-        : "ادخل بـ Pi  ·  Enter with Pi";
+  const toggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    window.localStorage.setItem("sultan-theme", next);
+    document.documentElement.classList.toggle("dark", next === "dark");
+  };
+
+  const metrics = useMemo(
+    () => [
+      { label: copy.zakatPool, value: "2.5%", detail: "Per eligible flow", icon: CircleDollarSign },
+      { label: copy.reconstruction, value: online ? copy.online : copy.offline, detail: lastSync, icon: Activity },
+      { label: copy.activeNodes, value: online ? "1" : "0", detail: "Sultan Core RPC", icon: Network },
+    ],
+    [copy, lastSync, online],
+  );
+
+  const modules = [
+    { title: copy.zakat, text: copy.zakatText, icon: CircleDollarSign, code: "ALLOCATION_2.5" },
+    { title: copy.security, text: copy.securityText, icon: ShieldCheck, code: "NON_CUSTODIAL" },
+    { title: copy.utilities, text: copy.utilitiesText, icon: Wrench, code: "COMMUNITY_CORE" },
+  ];
 
   return (
-    <main
-      dir="rtl"
-      lang="ar"
-      className="sultan-bg relative min-h-screen overflow-hidden bg-[#05070d] text-white"
-      style={{ fontFamily: "Amiri, 'Noto Naskh Arabic', serif" }}
-    >
-      <SultanBackdrop />
+    <main dir={isRtl ? "rtl" : "ltr"} lang={language} className="min-h-dvh bg-background text-foreground">
+      <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 w-full max-w-7xl items-center gap-3 px-4 sm:px-6 lg:px-8">
+          <Link to="/" className="flex min-w-0 items-center gap-3" aria-label="Sultan DApp home">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
+              <span className="text-base font-bold">S</span>
+            </span>
+            <span className="truncate text-sm font-semibold sm:text-base">Sultan DApp</span>
+          </Link>
+          <span className="hidden items-center gap-1.5 rounded-full border border-success/30 bg-success/10 px-2.5 py-1 text-[11px] font-semibold text-success sm:inline-flex">
+            <Check className="h-3 w-3" /> Pi OS Compliant
+          </span>
 
-      {/* Ambient blue/gold aura */}
-      <div className="pointer-events-none absolute inset-0 z-0">
-        <div className="absolute -top-32 right-1/4 h-96 w-96 rounded-full bg-amber-500/10 blur-[120px]" />
-        <div className="absolute bottom-0 left-1/4 h-96 w-96 rounded-full bg-blue-600/15 blur-[120px]" />
-      </div>
-
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-3xl flex-col items-center gap-8 px-5 py-12">
-        {/* Header emblem */}
-        <div className="flex flex-col items-center gap-4">
-          <div className="flex h-20 w-20 items-center justify-center rounded-full border border-amber-400/40 bg-gradient-to-br from-amber-400/20 to-blue-500/10 shadow-[0_0_40px_rgba(245,210,122,0.25)]">
-            <svg viewBox="0 0 64 64" className="h-10 w-10">
-              <defs>
-                <linearGradient id="crown" x1="0" x2="1" y1="0" y2="1">
-                  <stop offset="0%" stopColor="#f5d27a" />
-                  <stop offset="100%" stopColor="#c9a14a" />
-                </linearGradient>
-              </defs>
-              <path
-                d="M8 44 L16 20 L24 36 L32 12 L40 36 L48 20 L56 44 Z"
-                fill="url(#crown)"
-                stroke="#fff8e0"
-                strokeWidth="1"
-              />
-              <rect x="8" y="46" width="48" height="6" rx="2" fill="url(#crown)" />
-            </svg>
-          </div>
-          <div className="text-center">
-            <p className="text-[10px] uppercase tracking-[0.4em] text-amber-200/70">
-              YAS Protocol · بروتوكول يس
-            </p>
-            <h1
-              className="mt-2 bg-gradient-to-b from-amber-200 via-amber-400 to-amber-600 bg-clip-text text-4xl font-bold text-transparent sm:text-5xl"
-              style={{ fontFamily: "Amiri, 'Noto Naskh Arabic', serif" }}
-            >
-              وثيقة الكفاية الرقمية
-            </h1>
-            <p className="mt-1 text-lg font-light text-sky-200/80">
-              Digital Sufficiency Pact · سُلطان
-            </p>
-          </div>
-        </div>
-
-        {/* Core Resonance readout */}
-        <div className="w-full rounded-2xl border border-amber-400/30 bg-gradient-to-br from-amber-500/10 via-transparent to-blue-500/10 px-5 py-4 backdrop-blur">
-          <div className="flex items-center justify-between gap-4">
-            <div className="text-right">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-amber-200/70">
-                Core Resonance · تردد النواة
-              </p>
-              <p className="mt-1 font-mono text-3xl font-bold text-amber-200">
-                {CORE_RESONANCE}
-                <span className="ml-1 text-xs text-amber-200/60">Hz</span>
-              </p>
-            </div>
-            <div className="text-left">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-sky-200/70">
-                114 × π × 1.571
-              </p>
-              <p className="mt-1 text-xs text-sky-100/70">Quranic Frequency Lock</p>
-            </div>
-          </div>
-        </div>
-
-        {/* 5-Pillar Grid */}
-        <div className="grid w-full grid-cols-2 gap-3 sm:grid-cols-4">
-          {PILLARS.map((p) => (
-            <div
-              key={p.en}
-              className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-center backdrop-blur transition hover:-translate-y-0.5 hover:border-amber-400/40"
-            >
-              <div
-                className={`mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br ${p.accent} text-lg shadow-lg`}
+          <div className="ms-auto flex items-center gap-1.5">
+            <label className="relative">
+              <span className="sr-only">{copy.selectLanguage}</span>
+              <Globe2 className="pointer-events-none absolute start-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <select
+                value={language}
+                onChange={(event) => setActiveLanguage(event.target.value as Language)}
+                className="h-9 appearance-none rounded-md border border-input bg-background ps-8 pe-7 text-xs font-semibold outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
+                aria-label={copy.selectLanguage}
               >
-                <span aria-hidden>{p.icon}</span>
-              </div>
-              <p className="text-xl text-amber-200">{p.ar}</p>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-white/80">
-                {p.en}
-              </p>
-              <p className="mt-1 text-[10px] text-white/50">{p.sub}</p>
+                {(Object.keys(LANGUAGE_LABELS) as Language[]).map((key) => (
+                  <option key={key} value={key}>{LANGUAGE_LABELS[key]}</option>
+                ))}
+              </select>
+              <ChevronDown className="pointer-events-none absolute end-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+            </label>
+            <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label={copy.theme} title={copy.theme}>
+              {theme === "dark" ? <Sun /> : <Moon />}
+            </Button>
+            <Button
+              className="hidden sm:inline-flex"
+              onClick={connectWallet}
+              disabled={status === "connecting" || status === "ready"}
+            >
+              <Wallet />
+              {status === "ready" ? copy.connected : status === "connecting" ? copy.connecting : copy.connect}
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      <section className="border-b border-border">
+        <div className="mx-auto grid min-h-[440px] w-full max-w-7xl items-center gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8 lg:py-20">
+          <div className="max-w-3xl">
+            <div className="mb-6 inline-flex items-center gap-2 text-xs font-semibold uppercase text-primary">
+              <span className="h-1.5 w-1.5 rounded-full bg-success" />
+              {copy.eyebrow}
             </div>
+            <h1 className="max-w-2xl text-4xl font-semibold leading-[1.08] sm:text-6xl">{copy.title}</h1>
+            <p className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">{copy.intro}</p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Button
+                size="lg"
+                className="min-h-12 w-full sm:w-auto"
+                onClick={connectWallet}
+                disabled={status === "connecting" || status === "ready"}
+              >
+                {status === "connecting" ? <Activity className="animate-spin" /> : status === "ready" ? <Check /> : <Wallet />}
+                {status === "ready" ? copy.connected : status === "connecting" ? copy.connecting : copy.connect}
+              </Button>
+              {user && <span className="text-sm text-muted-foreground">{copy.connectedAs} <strong className="text-foreground">@{user.username}</strong></span>}
+            </div>
+            {error && <p role="alert" className="mt-4 max-w-xl border-s-2 border-destructive ps-3 text-sm text-destructive">{error}</p>}
+          </div>
+
+          <div className="relative overflow-hidden border-y border-border bg-surface-subtle px-6 py-8 sm:border sm:p-8">
+            <div className="flex items-center justify-between gap-4 border-b border-border pb-5">
+              <div>
+                <p className="text-xs font-semibold uppercase text-muted-foreground">SULTAN CORE</p>
+                <p className="mt-1 text-lg font-semibold">Mainnet interface</p>
+              </div>
+              <span className={`h-2.5 w-2.5 rounded-full ${online ? "bg-success" : "bg-destructive"}`} aria-label={online ? copy.online : copy.offline} />
+            </div>
+            <dl className="divide-y divide-border">
+              <div className="flex items-center justify-between py-4 text-sm"><dt className="text-muted-foreground">Network</dt><dd className="font-medium">Pi Mainnet</dd></div>
+              <div className="flex items-center justify-between py-4 text-sm"><dt className="text-muted-foreground">Custody</dt><dd className="flex items-center gap-2 font-medium"><LockKeyhole className="h-4 w-4 text-success" /> User-controlled</dd></div>
+              <div className="flex items-center justify-between pt-4 text-sm"><dt className="text-muted-foreground">API status</dt><dd className="font-mono text-xs">{online ? "200 / ONLINE" : "SYNCING"}</dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-border bg-surface-subtle">
+        <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          <div className="mb-6 flex items-end justify-between gap-4">
+            <h2 className="text-xl font-semibold">{copy.overview}</h2>
+            <span className="text-xs text-muted-foreground">{copy.updated} · {lastSync}</span>
+          </div>
+          <div className="grid divide-y divide-border border-y border-border sm:grid-cols-3 sm:divide-x sm:divide-y-0 rtl:sm:divide-x-reverse">
+            {metrics.map(({ label, value, detail, icon: Icon }) => (
+              <div key={label} className="px-1 py-6 sm:px-6 sm:first:ps-0 sm:last:pe-0">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground"><Icon className="h-4 w-4" />{label}</div>
+                <p className="mt-4 text-3xl font-semibold tabular-nums">{value}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{detail}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
+        <div className="mb-9 max-w-2xl">
+          <h2 className="text-2xl font-semibold">{copy.modules}</h2>
+          <p className="mt-2 text-sm text-muted-foreground">{copy.modulesIntro}</p>
+        </div>
+        <div className="grid border border-border md:grid-cols-3 md:divide-x rtl:md:divide-x-reverse">
+          {modules.map(({ title, text, icon: Icon, code }, index) => (
+            <article key={title} className={`min-h-64 p-6 sm:p-8 ${index > 0 ? "border-t border-border md:border-t-0" : ""}`}>
+              <div className="flex items-start justify-between gap-4">
+                <span className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary"><Icon className="h-5 w-5" /></span>
+                <span className="font-mono text-[10px] text-muted-foreground">{code}</span>
+              </div>
+              <h3 className="mt-12 text-lg font-semibold">{title}</h3>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">{text}</p>
+            </article>
           ))}
         </div>
+      </section>
 
-        {/* Sarh Monitor — full-width fifth pillar */}
-        <div className="relative w-full overflow-hidden rounded-2xl border border-amber-400/30 bg-gradient-to-r from-amber-500/10 via-blue-600/10 to-amber-500/10 p-5">
-          <div className="absolute inset-0 opacity-30">
-            <div className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
-          </div>
-          <div className="relative flex items-center justify-between gap-4">
-            <div className="text-right">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-amber-200/70">
-                الصرح · Sarh Monitor
-              </p>
-              <p className="mt-1 text-2xl font-bold text-amber-200">114Hz</p>
-              <p className="mt-1 text-[11px] text-white/70">
-                Gaza & Sudan · Live Reconstruction Core
-              </p>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <span className="relative flex h-3 w-3">
-                <span
-                  className={`absolute inline-flex h-full w-full rounded-full ${telemetry.online ? "animate-ping bg-emerald-400/60" : "bg-red-400/60"}`}
-                />
-                <span
-                  className={`relative inline-flex h-3 w-3 rounded-full ${telemetry.online ? "bg-emerald-400" : "bg-red-400"}`}
-                />
-              </span>
-              <span
-                className={`text-[9px] uppercase tracking-widest ${telemetry.online ? "text-emerald-300/80" : "text-red-300/80"}`}
-              >
-                {telemetry.online ? "LIVE" : "SYNC"}
-              </span>
-            </div>
-          </div>
-
-          {/* Telemetry readout */}
-          <div className="relative mt-4 grid grid-cols-3 gap-2 border-t border-amber-300/20 pt-3 text-center">
+      {user && (
+        <section className="border-y border-border bg-surface-subtle">
+          <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
             <div>
-              <p className="text-[9px] uppercase tracking-widest text-amber-200/60">
-                Pulse · نبض
-              </p>
-              <p className="mt-1 font-mono text-sm font-bold text-amber-100">
-                #{telemetry.tick.toString().padStart(4, "0")}
-              </p>
+              <p className="text-xs font-semibold uppercase text-primary">PI PAYMENT</p>
+              <h2 className="mt-3 text-2xl font-semibold">{copy.payment}</h2>
+              <p className="mt-3 max-w-md text-sm leading-6 text-muted-foreground">{copy.paymentText}</p>
             </div>
-            <div>
-              <p className="text-[9px] uppercase tracking-widest text-sky-200/60">
-                Freq · تردد
-              </p>
-              <p className="mt-1 font-mono text-sm font-bold text-sky-100">
-                {telemetry.frequency.toFixed(2)}
-              </p>
-            </div>
-            <div>
-              <p className="text-[9px] uppercase tracking-widest text-emerald-200/60">
-                Sync · مزامنة
-              </p>
-              <p className="mt-1 font-mono text-sm font-bold text-emerald-100">
-                {telemetry.lastSync}
-              </p>
-            </div>
+            <PiPaymentButton userId={user.uid} userName={user.username} />
           </div>
+        </section>
+      )}
+
+      <footer className="border-t border-border">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-5 px-4 py-8 text-xs text-muted-foreground sm:px-6 md:flex-row md:items-center lg:px-8">
+          <p>© 2026 Sultan DApp · @YASSINSERVICE</p>
+          <nav className="flex flex-wrap gap-x-5 gap-y-3 md:ms-auto" aria-label="Footer">
+            <a href="https://github.com/pi-apps/pi-platform-docs/blob/master/LICENSE" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:text-foreground">PiOS License <ArrowUpRight className="h-3 w-3" /></a>
+            <a href="https://github.com/Wizyes4you/Sultan-Core" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:text-foreground">GitHub <ArrowUpRight className="h-3 w-3" /></a>
+            <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
+            <Link to="/terms" className="hover:text-foreground">Terms</Link>
+            <Link to="/contact" className="hover:text-foreground">Contact</Link>
+          </nav>
         </div>
-
-        {/* Reconstruction Status Box */}
-        <div className="w-full rounded-2xl border border-sky-400/30 bg-blue-950/30 p-5 text-right backdrop-blur">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-bold text-amber-200">
-              2.5%
-            </span>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-sky-200/70">
-              حالة الإعمار · Reconstruction Status
-            </p>
-          </div>
-          <p className="text-sm leading-loose text-white/85">
-            تفعيل الأصل السيادي: بث وتوجيه تدفقات الإعمار بنسبة 2.5% لوجه الله
-            تعالى. مزامنة كاملة ومصادقة مع بروتوكولات العقود الذكية PiRC1 و
-            PiRC2.
-          </p>
-        </div>
-
-        {/* Auth / Payment */}
-        {user ? (
-          <div className="w-full space-y-4">
-            <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 backdrop-blur">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 to-amber-600 text-sm font-bold text-[#1a1206]">
-                {user.username.charAt(0).toUpperCase()}
-              </div>
-              <div className="flex-1 text-right">
-                <p className="text-xs text-amber-200/60">أهلاً بك يا سلطان</p>
-                <p className="text-sm font-medium text-white">@{user.username}</p>
-              </div>
-              <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.8)]" />
-            </div>
-
-            <div className="rounded-2xl border border-amber-400/20 bg-white/[0.03] p-6 backdrop-blur">
-              <div className="mb-3 flex items-center justify-end gap-2">
-                <p className="text-xs uppercase tracking-widest text-amber-200/80">
-                  Humanitarian Reconstruction · إعمار
-                </p>
-                <span className="h-1 w-8 rounded-full bg-gradient-to-l from-amber-300 to-transparent" />
-              </div>
-              <div dir="ltr">
-                <PiPaymentButton userId={user.uid} userName={user.username} />
-              </div>
-            </div>
-          </div>
-        ) : (
-          <button
-            onClick={signIn}
-            disabled={status === "signing-in" || status === "initializing"}
-            className="group relative inline-flex items-center justify-center gap-3 rounded-full border border-amber-400/50 bg-gradient-to-b from-amber-300 to-amber-600 px-10 py-4 text-sm font-semibold tracking-wide text-[#1a1206] shadow-[0_10px_40px_-10px_rgba(245,210,122,0.6)] transition hover:brightness-110 disabled:opacity-60"
-          >
-            <span className="relative z-10">{statusLabel}</span>
-          </button>
-        )}
-
-        {error && (
-          <p className="w-full max-w-sm rounded-xl border border-red-300/40 bg-red-500/10 px-4 py-3 text-center text-xs text-red-200">
-            {error}
-          </p>
-        )}
-
-        {/* Footer rule */}
-        <div className="mt-6 w-full border-t border-amber-400/20 pt-5 text-center">
-          <p className="text-xs leading-loose text-amber-200/70">
-            قاعده تابتة: كن فيكون يس | التردد القرآني (114 سورة) | 6 × 19 = 114
-          </p>
-        </div>
-      </div>
+      </footer>
     </main>
   );
 }
