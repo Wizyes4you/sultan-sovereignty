@@ -17,6 +17,7 @@ export const Route = createFileRoute("/privacy")({
           "SULTAN privacy policy: how we handle data, protect user trust, and uphold transparency on the Pi Network.",
       },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { property: "og:url", content: "https://sultan-core.lovable.app/privacy" },
     ],
     links: [

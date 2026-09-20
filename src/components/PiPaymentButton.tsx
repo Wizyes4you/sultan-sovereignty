@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { createPiPayment, quoteGas, type GasQuote } from "@/lib/pi-client";
+import { Check, LoaderCircle, RotateCcw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 
 type PaymentStatus = "idle" | "pending" | "success" | "error";
@@ -96,54 +98,39 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
     }
   };
 
-  const getButtonStyles = (): string => {
-    const baseStyles =
-      "inline-flex items-center justify-center rounded-md px-5 py-2.5 text-sm font-medium transition-colors";
-
-    switch (status) {
-      case "pending":
-        return `${baseStyles} bg-amber-500 text-white opacity-75 cursor-wait hover:bg-amber-600`;
-      case "success":
-        return `${baseStyles} bg-green-600 text-white hover:bg-green-700`;
-      case "error":
-        return `${baseStyles} bg-destructive text-destructive-foreground hover:bg-destructive/90`;
-      default:
-        return `${baseStyles} bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-60`;
-    }
-  };
-
   const isDisabled = status === "pending" || status === "success";
 
   return (
-    <div className="flex flex-col gap-3">
-      <button
+    <div className="flex flex-col gap-4">
+      <Button
         onClick={handlePayment}
         disabled={isDisabled}
-        className={getButtonStyles()}
+        size="lg"
+        variant={status === "error" ? "destructive" : "default"}
+        className="min-h-12 w-full"
       >
-        {status === "pending" && (
-          <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-        )}
+        {status === "pending" && <LoaderCircle className="animate-spin" />}
+        {status === "success" && <Check />}
         {getButtonText()}
-      </button>
+      </Button>
 
       {status === "success" && transactionId && (
-        <div className="rounded-md border border-green-300 bg-green-50 px-4 py-3">
-          <p className="text-xs font-medium text-green-900">Transaction ID:</p>
-          <p className="break-all font-mono text-xs text-green-800">{transactionId}</p>
+        <div className="border-s-2 border-success bg-success/5 px-4 py-3">
+          <p className="text-xs font-medium text-foreground">Transaction ID</p>
+          <p className="mt-1 break-all font-mono text-xs text-muted-foreground">{transactionId}</p>
           {donationAmount !== null && (
-            <div className="mt-2 space-y-1 border-t border-green-200 pt-2">
-              <p className="text-xs text-green-800">
+            <div className="mt-3 space-y-1.5 border-t border-border pt-3">
+              <p className="text-xs text-muted-foreground">
                 <span className="font-semibold">Base Transaction:</span> 1.00 Pi
               </p>
-              <p className="text-xs text-green-800">
+              <p className="text-xs text-muted-foreground">
                 <span className="font-semibold">Humanitarian Donation (2.5%):</span> {donationAmount.toFixed(4)} Pi
               </p>
-              <p className="text-xs font-semibold text-green-900">
+              <p className="text-xs font-semibold text-foreground">
                 Total Contributed: {(1 + donationAmount).toFixed(4)} Pi
               </p>
               {gas && (
-                <p className="text-xs text-green-800">
+                <p className="text-xs text-muted-foreground">
                   <span className="font-semibold">Network Gas Fee:</span>{" "}
                   {gas.totalFeePi.toFixed(7)} Pi ({gas.totalFeeStroops} stroops ·{" "}
                   {gas.operations} op)
@@ -159,31 +146,33 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
         <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3">
           <p className="text-xs font-medium text-destructive">Error:</p>
           <p className="text-xs text-destructive">{error}</p>
-          <button
+          <Button
             onClick={() => {
               setStatus("idle");
               setError(null);
             }}
-            className="mt-2 text-xs font-semibold text-destructive underline hover:no-underline"
+            variant="ghost"
+            size="sm"
+            className="mt-2"
           >
-            Dismiss
-          </button>
+            <RotateCcw /> Dismiss
+          </Button>
         </div>
       )}
 
       {status === "idle" && (
         <div className="space-y-2 text-xs text-muted-foreground">
           {/* Public reconstruction metadata — visible to every pioneer before signing */}
-          <div className="rounded-md border border-amber-300/40 bg-gradient-to-br from-amber-50/10 to-amber-100/5 px-4 py-3 text-left">
+          <div className="border border-border bg-background px-4 py-4 text-left">
             <div className="mb-1 flex items-center justify-between">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-300">
+              <span className="text-[10px] font-semibold uppercase text-muted-foreground">
                 إعمار · Reconstruction Split
               </span>
-              <span className="rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-bold text-amber-200">
+              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
                 2.5%
               </span>
             </div>
-            <div className="grid grid-cols-2 gap-1 text-[11px] text-amber-100/80">
+            <div className="grid grid-cols-2 gap-1.5 text-[11px] text-muted-foreground">
               <span>Base · أساس</span>
               <span className="text-right font-mono">1.0000 Pi</span>
               <span>Reconstruction · إعمار</span>
@@ -191,7 +180,7 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
               <span className="font-semibold">Total · مجموع</span>
               <span className="text-right font-mono font-semibold">1.0250 Pi</span>
             </div>
-            <p className="mt-2 border-t border-amber-300/20 pt-1.5 text-[10px] leading-relaxed text-amber-100/60">
+            <p className="mt-3 border-t border-border pt-2.5 text-[10px] leading-relaxed text-muted-foreground">
               The 2.5% flows transparently to humanitarian reconstruction (Gaza · Sudan)
               and is recorded on-chain as payment metadata for every pioneer to witness.
             </p>
