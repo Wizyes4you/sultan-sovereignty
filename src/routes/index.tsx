@@ -390,6 +390,41 @@ function Index() {
         </div>
       </section>
 
+      <section className="border-t border-border bg-surface-subtle">
+        <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          <div className="mb-6 flex flex-wrap items-center gap-3">
+            <h2 className="text-xl font-semibold">Reconstruction telemetry</h2>
+            <span
+              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold ${
+                online
+                  ? "border-success/30 bg-success/10 text-success"
+                  : "border-destructive/30 bg-destructive/10 text-destructive"
+              }`}
+            >
+              <span className={`h-1.5 w-1.5 rounded-full ${online ? "bg-success" : "bg-destructive"}`} />
+              {online ? "LIVE" : "SYNC"}
+            </span>
+          </div>
+          <dl className="grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-4">
+            {[
+              { k: "Stream pulses", v: telemetry.tick.toString() },
+              { k: "Core resonance", v: telemetry.frequency ? telemetry.frequency.toFixed(2) : "—" },
+              { k: "Allocation", v: telemetry.split ? `${(telemetry.split * 100).toFixed(1)}%` : "—" },
+              { k: "Last sync", v: lastSync },
+            ].map(({ k, v }) => (
+              <div key={k} className="bg-background px-5 py-6">
+                <dt className="text-xs text-muted-foreground">{k}</dt>
+                <dd className="mt-3 font-mono text-2xl tabular-nums">{v}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Endpoint <span className="font-mono">/api/sultan-core</span> · refresh every{" "}
+            {(TELEMETRY_CADENCE_MS / 1000).toFixed(2)}s
+          </p>
+        </div>
+      </section>
+
       {user && (
         <section className="border-y border-border bg-surface-subtle">
           <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
