@@ -164,6 +164,9 @@ const COPY = {
 
 const LANGUAGE_LABELS: Record<Language, string> = { ar: "AR", en: "EN", fr: "FR", es: "ES" };
 
+// 114-based refresh cadence for the reconstruction telemetry stream.
+const TELEMETRY_CADENCE_MS = Math.round(1_000_000 / 114);
+
 function Index() {
   const [status, setStatus] = useState<Status>("idle");
   const [user, setUser] = useState<{ uid: string; username: string } | null>(null);
@@ -172,6 +175,7 @@ function Index() {
   const [theme, setTheme] = useState<Theme>("dark");
   const [online, setOnline] = useState(false);
   const [lastSync, setLastSync] = useState("—");
+  const [telemetry, setTelemetry] = useState({ tick: 0, frequency: 0, split: 0 });
 
   const copy = COPY[language];
   const isRtl = language === "ar";
@@ -196,17 +200,26 @@ function Index() {
       try {
         const response = await fetch("/api/sultan-core", { headers: { accept: "application/json" } });
         if (!response.ok) throw new Error(String(response.status));
-        const data = (await response.json()) as { timestamp: string };
+        const data = (await response.json()) as {
+          timestamp: string;
+          frequency: number;
+          reconstruction_split: number;
+        };
         if (!cancelled) {
           setOnline(true);
           setLastSync(new Date(data.timestamp).toLocaleTimeString(language, { hour: "2-digit", minute: "2-digit" }));
+          setTelemetry((prev) => ({
+            tick: prev.tick + 1,
+            frequency: data.frequency,
+            split: data.reconstruction_split,
+          }));
         }
       } catch {
         if (!cancelled) setOnline(false);
       }
     };
     void poll();
-    const interval = window.setInterval(poll, 15_000);
+    const interval = window.setInterval(poll, TELEMETRY_CADENCE_MS);
     return () => {
       cancelled = true;
       window.clearInterval(interval);
@@ -374,6 +387,41 @@ function Index() {
               <p className="mt-3 text-sm leading-6 text-muted-foreground">{text}</p>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="border-t border-border bg-surface-subtle">
+        <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          <div className="mb-6 flex flex-wrap items-center gap-3">
+            <h2 className="text-xl font-semibold">Reconstruction telemetry</h2>
+            <span
+              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold ${
+                online
+                  ? "border-success/30 bg-success/10 text-success"
+                  : "border-destructive/30 bg-destructive/10 text-destructive"
+              }`}
+            >
+              <span className={`h-1.5 w-1.5 rounded-full ${online ? "bg-success" : "bg-destructive"}`} />
+              {online ? "LIVE" : "SYNC"}
+            </span>
+          </div>
+          <dl className="grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-4">
+            {[
+              { k: "Stream pulses", v: telemetry.tick.toString() },
+              { k: "Core resonance", v: telemetry.frequency ? telemetry.frequency.toFixed(2) : "—" },
+              { k: "Allocation", v: telemetry.split ? `${(telemetry.split * 100).toFixed(1)}%` : "—" },
+              { k: "Last sync", v: lastSync },
+            ].map(({ k, v }) => (
+              <div key={k} className="bg-background px-5 py-6">
+                <dt className="text-xs text-muted-foreground">{k}</dt>
+                <dd className="mt-3 font-mono text-2xl tabular-nums">{v}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Endpoint <span className="font-mono">/api/sultan-core</span> · refresh every{" "}
+            {(TELEMETRY_CADENCE_MS / 1000).toFixed(2)}s
+          </p>
         </div>
       </section>
 
