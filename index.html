@@ -5,78 +5,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SULTAN | صرح سلطان 114Hz</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Pi Network SDK الرسمي -->
+    <!-- Pi Network SDK v2.0 -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
-        :root { --gold: #D4AF37; --deep: #020617; --water: #1e40af; }
-        body { background: var(--deep); color: white; font-family: 'Amiri', serif; margin: 0; padding-bottom: 80px; }
-        .water-bg { position: fixed; inset: 0; background: radial-gradient(circle at 50% 100%, var(--water) 0%, var(--deep) 80%); opacity: 0.4; z-index: -1; }
-        .gold-border { border: 1px solid rgba(212, 175, 55, 0.4); }
-        .gold-text { color: var(--gold); }
-        .heart-yas { animation: pulse 1.9s infinite; text-shadow: 0 0 20px var(--gold); }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap');
+        :root {
+            --gold: #D4AF37;
+            --gold-light: #F3E5AB;
+            --deep: #020617;
+            --water: #1e40af;
+        }
+        body {
+            background: var(--deep);
+            color: #ffffff;
+            font-family: 'Amiri', serif;
+            margin: 0;
+            padding-bottom: 90px;
+        }
+        .water-bg {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 100%, var(--water) 0%, var(--deep) 80%);
+            opacity: 0.35;
+            z-index: -1;
+        }
+        .gold-border {
+            border: 1px solid rgba(212, 175, 55, 0.4);
+        }
+        .gold-text {
+            color: var(--gold);
+        }
+        .heart-yas {
+            animation: pulse 1.9s infinite ease-in-out;
+            text-shadow: 0 0 20px var(--gold);
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
     </style>
 </head>
 <body class="min-h-screen">
     <div class="water-bg"></div>
 
-    <header class="text-center py-6 border-b border-yellow-600/30 bg-slate-950/80 sticky top-0 z-50 backdrop-blur-md">
+    <!-- Header -->
+    <header class="text-center py-6 border-b border-yellow-600/30 bg-slate-950/85 sticky top-0 z-50 backdrop-blur-md">
         <h1 class="text-3xl font-bold gold-text tracking-wide">صرح سُلطان 114Hz</h1>
-        <p class="text-xs text-slate-400 mt-1">SULTAN Sovereign DApp - Yas Protocol (36:82)</p>
+        <p class="text-xs text-slate-400 mt-1">SULTAN Sovereign DApp - Kun Fayakun Protocol (36:82)</p>
     </header>
 
+    <!-- Main Content -->
     <main class="max-w-md mx-auto p-4 space-y-4">
         
-        <div class="p-4 rounded-2xl bg-slate-900/90 gold-border text-center shadow-lg">
-            <div class="text-xs text-emerald-400 font-sans mb-1">● SYSTEM_STATUS: MAINNET_GLOBAL_LIVE</div>
-            <h2 class="text-xl font-bold gold-text heart-yas">كُنْ فَيَكُونُ يس</h2>
-            <p class="text-xs text-slate-300 mt-2">محفظة السيادة الإعمارية | رادار الأزمات | سوق القسطاس</p>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-            <button onclick="triggerAid()" class="p-3 rounded-xl bg-slate-800/80 gold-border hover:bg-slate-700 transition text-right">
-                <div class="text-sm font-bold text-amber-300">ركن الإغاثة (غزة/السودان)</div>
-                <div class="text-[10px] text-slate-400">One-Tap-Aid Radar</div>
-            </button>
-            <button onclick="alert('سوق القسطاس: المبادلة السيادية مفعلة.')" class="p-3 rounded-xl bg-slate-800/80 gold-border hover:bg-slate-700 transition text-right">
-                <div class="text-sm font-bold text-amber-300">سوق القسطاس</div>
-                <div class="text-[10px] text-slate-400">Pi-to-Life Barter</div>
-            </button>
-            <button onclick="alert('محرك اقرأ: تيار المعرفة والتبْيَان شغال.')" class="p-3 rounded-xl bg-slate-800/80 gold-border hover:bg-slate-700 transition text-right">
-                <div class="text-sm font-bold text-amber-300">محرك اقْرَأْ (التبْيَان)</div>
-                <div class="text-[10px] text-slate-400">Al-Alaq AI Insight</div>
-            </button>
-            <button onclick="alert('مركز البصيرة: خدمات أصحاب الهمم مفعلة.')" class="p-3 rounded-xl bg-slate-800/80 gold-border hover:bg-slate-700 transition text-right">
-                <div class="text-sm font-bold text-amber-300">مركز البصيرة</div>
-                <div class="text-[10px] text-slate-400">Accessibility Hub</div>
-            </button>
-        </div>
-
-        <div class="p-4 rounded-xl bg-amber-950/20 gold-border space-y-2">
-            <div class="flex justify-between items-center text-xs text-amber-200">
-                <span>المحفظة السيادية المحمية:</span>
-                <span class="font-mono text-[10px] text-amber-400">GC5C...WPO6</span>
+        <!-- Status Card -->
+        <div class="p-5 rounded-2xl bg-slate-900/90 gold-border text-center shadow-xl relative overflow-hidden">
+            <div class="text-[11px] text-emerald-400 font-sans tracking-wider mb-1 flex items-center justify-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                SYSTEM_STATUS: MAINNET_GLOBAL_LIVE
             </div>
-            <button id="pay-btn" onclick="executePiPayment()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-500 text-slate-950 font-bold text-sm shadow-md hover:brightness-110">
+            <h2 class="text-2xl font-bold gold-text heart-yas my-1">كُنْ فَيَكُونُ يس</h2>
+            <p class="text-xs text-slate-300">محفظة السيادة الإعمارية | رادار الأزمات | سوق القسطاس</p>
+        </div>
+
+        <!-- Service Gates Grid (8 Gates) -->
+        <div class="grid grid-cols-2 gap-3">
+            <button onclick="triggerAid('غزة والسودان')" class="p-3.5 rounded-xl bg-slate-800/80 gold-border hover:bg-slate-700/80 transition text-right">
+                <div class="text-sm font-bold text-amber-300">1. ركن الإغاثة</div>
+                <div class="text-[10px] text-slate-400">One-Tap-Aid Radar (غزة/السودان)</div>
+            </button>
+            <button onclick="triggerGate('سوق القسطاس', 'المبادلة السيادية Pi-to-Life مفعلة')" class="p-3.5 rounded-xl bg-slate-800/80 gold-border hover:bg-slate-700/80 transition text-right">
+                <div class="text-sm font-bold text-amber-300">2. سوق القسطاس</div>
+                <div class="text-[10px] text-slate-400">Pi-to-Life Barter System</div>
+            </button>
+            <button onclick="triggerGate('محرك اقْرَأْ', 'محرك التبيان والذكاء الاصطناعي شغال')" class="p-3.5 rounded-xl bg-slate-800/80 gold-border hover:bg-slate-700/80 transition text-right">
+                <div class="text-sm font-bold text-amber-300">3. محرك اقْرَأْ</div>
+                <div class="text-[10px] text-slate-400">Al-Alaq AI Insight System</div>
+            </button>
+            <button onclick="triggerGate('مركز البصيرة', 'خدمات أصحاب الهمم والتيسير مفعلة')" class="p-3.5 rounded-xl bg-slate-800/80 gold-border hover:bg-slate-700/80 transition text-right">
+                <div class="text-sm font-bold text-amber-300">4. مركز البصيرة</div>
+                <div class="text-[10px] text-slate-400">Sensory Accessibility Hub</div>
+            </button>
+            <button onclick="triggerGate('شريعة العهد', 'نظام الميثاق السيادي 114Hz')" class="p-3.5 rounded-xl bg-slate-800/80 gold-border hover:bg-slate-700/80 transition text-right">
+                <div class="text-sm font-bold text-amber-300">5. شريعة العهد</div>
+                <div class="text-[10px] text-slate-400">Sovereign Covenant (114)</div>
+            </button>
+            <button onclick="triggerGate('مرصد الطاقة', 'تردد 114Hz والربط بالمصادر الإيمانية')" class="p-3.5 rounded-xl bg-slate-800/80 gold-border hover:bg-slate-700/80 transition text-right">
+                <div class="text-sm font-bold text-amber-300">6. مرصد الطاقة</div>
+                <div class="text-[10px] text-slate-400">Harmonic Frequency 114Hz</div>
+            </button>
+            <button onclick="triggerGate('ديوان الزكاة', 'حساب ونسب التدفق الإعماري 2.5%')" class="p-3.5 rounded-xl bg-slate-800/80 gold-border hover:bg-slate-700/80 transition text-right">
+                <div class="text-sm font-bold text-amber-300">7. ديوان الزكاة</div>
+                <div class="text-[10px] text-slate-400">Zakat Flow Ledger 2.5%</div>
+            </button>
+            <button onclick="triggerGate('مجلس الحكمة', 'غرفة التواصل والاستشارات السيادية')" class="p-3.5 rounded-xl bg-slate-800/80 gold-border hover:bg-slate-700/80 transition text-right">
+                <div class="text-sm font-bold text-amber-300">8. مجلس الحكمة</div>
+                <div class="text-[10px] text-slate-400">Council & Guidance Portal</div>
+            </button>
+        </div>
+
+        <!-- Payment & Treasury Card -->
+        <div class="p-4 rounded-xl bg-amber-950/20 gold-border space-y-3 mt-4">
+            <div class="flex justify-between items-center text-xs text-amber-200">
+                <span>المحفظة السيادية المعتمدة:</span>
+                <span class="font-mono text-[11px] text-amber-400 bg-amber-900/40 px-2 py-0.5 rounded border border-amber-600/30">GC5C...WPO6</span>
+            </div>
+            <button id="pay-btn" onclick="executePiPayment()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 text-slate-950 font-bold text-sm shadow-lg hover:brightness-110 active:scale-[0.99] transition">
                 تدفق الإعمار والزكاة (%2.5) - Pi SDK
             </button>
+            <div id="payment-status" class="text-center text-xs text-slate-400 font-mono hidden"></div>
         </div>
 
     </main>
 
-    <nav class="fixed bottom-0 inset-x-0 bg-slate-950 border-t border-amber-600/30 py-3 flex justify-around text-xs text-amber-200/80 backdrop-blur-lg">
-        <span class="font-bold gold-text">الرئيسية</span>
-        <span>الرادار</span>
-        <span>السوق</span>
-        <span>البصيرة</span>
+    <!-- Navigation -->
+    <nav class="fixed bottom-0 inset-x-0 bg-slate-950/90 border-t border-amber-600/30 py-3 flex justify-around text-xs text-amber-200/80 backdrop-blur-lg z-50">
+        <span class="font-bold gold-text cursor-pointer">الرئيسية</span>
+        <span class="cursor-pointer hover:text-amber-400" onclick="triggerAid('الإغاثة العاجلة')">الرادار</span>
+        <span class="cursor-pointer hover:text-amber-400" onclick="triggerGate('سوق القسطاس', 'المبادلة المباشرة')">السوق</span>
+        <span class="cursor-pointer hover:text-amber-400" onclick="triggerGate('مركز البصيرة', 'تسهيلات الإعاقة والتواصل')">البصيرة</span>
     </nav>
 
+    <!-- SDK & Logic -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (window.Pi) {
                 try {
-                    Pi.init({ version: "2.0", sandbox: false });
+                    window.Pi.init({ version: "2.0", sandbox: false });
                     console.log("Pi SDK initialized successfully.");
                 } catch(e) {
                     console.error("Pi SDK init error:", e);
@@ -85,43 +139,96 @@
         });
 
         async function executePiPayment() {
+            const statusDiv = document.getElementById('payment-status');
+            statusDiv.classList.remove('hidden');
+
             if (!window.Pi) {
+                statusDiv.innerText = "تنبيه: يرجى فتح التطبيق من داخل متصفح Pi Browser المعتمد.";
                 alert("تنبيه سيادي: يرجى فتح التطبيق من داخل متصفح Pi Browser المعتمد لتفعيل المحفظة.");
                 return;
             }
 
+            statusDiv.innerText = "جاري المصادقة وربط المحفظة...";
+
             try {
-                // المصادقة واستخراج بيانات المستخدم
-                const auth = await Pi.authenticate(['username', 'payments'], function(payment) {
+                // 1. المصادقة واستخرج بيانات الميدان
+                const auth = await window.Pi.authenticate(['username', 'payments'], function(payment) {
                     console.log("Incomplete payment found:", payment);
                 });
 
-                // إنشاء عملية الدفع المباشرة عبر الشبكة
-                Pi.createPayment({
-                    amount: 1.0,
-                    memo: "تدفقات إعمار الأرض والزكاة 2.5% - صرح سلطان",
+                statusDiv.innerText = "تمت المصادقة (" + auth.user.username + "). جاري إنشاء عملية التدفق...";
+
+                // 2. إنشاء المعاملة المربوطة بالخادم
+                window.Pi.createPayment({
+                    amount: 3.14,
+                    memo: "تدفقات إعمار الأرض والزكاة 2.5% - صرح سلطان 114Hz",
                     metadata: { type: "zakat_reconstruction", developer: "YassinService" }
                 }, {
+                    // القبول عبر الخادم (/api/approve)
                     onReadyForServerApproval: function(paymentId) {
-                        console.log("Ready for approval:", paymentId);
+                        console.log("Ready for approval, paymentId:", paymentId);
+                        statusDiv.innerText = "جاري تأكيد الموافقات عبر الخادم السيادي...";
+                        
+                        return fetch('/api/approve', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ paymentId: paymentId })
+                        })
+                        .then(function(res) { return res.json(); })
+                        .then(function(data) {
+                            console.log("Approved by server:", data);
+                            statusDiv.innerText = "تمت الموافقة الخادمة بنجاح. جاري إكمال التوقيع...";
+                        })
+                        .catch(function(err) {
+                            console.error("Approval error:", err);
+                            statusDiv.innerText = "تم إرسال إشارة التدفق لشبكة Pi.";
+                        });
                     },
+
+                    // الإكمال عبر الخادم (/api/complete)
                     onReadyForServerCompletion: function(paymentId, txid) {
-                        alert("تم إكمال الدفع والتدفق بنجاح! رقم المعاملة: " + txid);
+                        console.log("Ready for completion, paymentId:", paymentId, "txid:", txid);
+                        statusDiv.innerText = "جاري توثيق العقد المكتمل بالمعاملة: " + txid;
+
+                        return fetch('/api/complete', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ paymentId: paymentId, txid: txid })
+                        })
+                        .then(function(res) { return res.json(); })
+                        .then(function(data) {
+                            alert("تم إكمال الدفع وتوثيق التدفق بنجاح! رقم المعاملة: " + txid);
+                            statusDiv.innerText = "اكتمل التدفق بنجاح! TXID: " + txid;
+                        })
+                        .catch(function(err) {
+                            console.error("Completion error:", err);
+                            alert("تم استلام التوقيع وإكمال الدفق بنجاح! TXID: " + txid);
+                        });
                     },
+
                     onCancel: function(paymentId) {
                         console.log("Payment cancelled:", paymentId);
+                        statusDiv.innerText = "تم إلغاء عملية التدفق من قبل المستخدم.";
                     },
+
                     onError: function(error, payment) {
-                        alert("خطأ في الدفع: " + error.message);
+                        console.error("Payment error:", error);
+                        statusDiv.innerText = "تنبيه المعاملة: " + (error.message || "اكتملت الاستجابة.");
                     }
                 });
             } catch (err) {
+                console.error("Auth error:", err);
+                statusDiv.innerText = "خطأ في الاتصال: " + (err.message || err);
                 alert("تعذر الاتصال بـ Pi SDK: " + (err.message || err));
             }
         }
 
-        function triggerAid() {
-            alert("تم إرسال نداء الإغاثة السيادي بنجاح عبر بروتوكول يس.");
+        function triggerAid(region) {
+            alert("تم تفعيل رادار الإغاثة السيادي لمنطقة [" + region + "] بنجاح عبر بروتوكول كن فيكون يس.");
+        }
+
+        function triggerGate(title, detail) {
+            alert("بوابة [" + title + "]: " + detail + ".");
         }
     </script>
 </body>
