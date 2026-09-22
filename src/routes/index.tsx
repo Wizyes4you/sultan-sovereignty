@@ -1,6 +1,6 @@
-// تصحيح هيكل الواجهة الرئيسية وتفعيل الأزرار والتنسيقات المرئية
-export default function Index() {
-  return (
+بسم الله الرحمن الرحيم 
+    <div className="min-h-screen bg-[#070b14] text-amber-100 font-sans pb-20">
+      
     <div className="min-h-screen bg-[#070b14] text-amber-100 font-sans pb-20">
       {/* رأس الوثيقة السيادية */}
       <header className="p-4 bg-gradient-to-r from-amber-600 to-amber-400 text-slate-950 text-center font-bold shadow-lg">
