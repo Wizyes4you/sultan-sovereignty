@@ -172,6 +172,7 @@ function Index() {
   const [theme, setTheme] = useState<Theme>("dark");
   const [online, setOnline] = useState(false);
   const [lastSync, setLastSync] = useState("—");
+  const [telemetry, setTelemetry] = useState({ tick: 0, frequency: 0, split: 0 });
 
   const copy = COPY[language];
   const isRtl = language === "ar";
@@ -196,10 +197,19 @@ function Index() {
       try {
         const response = await fetch("/api/sultan-core", { headers: { accept: "application/json" } });
         if (!response.ok) throw new Error(String(response.status));
-        const data = (await response.json()) as { timestamp: string };
+        const data = (await response.json()) as {
+          timestamp: string;
+          frequency: number;
+          reconstruction_split: number;
+        };
         if (!cancelled) {
           setOnline(true);
           setLastSync(new Date(data.timestamp).toLocaleTimeString(language, { hour: "2-digit", minute: "2-digit" }));
+          setTelemetry((prev) => ({
+            tick: prev.tick + 1,
+            frequency: data.frequency,
+            split: data.reconstruction_split,
+          }));
         }
       } catch {
         if (!cancelled) setOnline(false);
