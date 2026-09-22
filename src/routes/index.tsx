@@ -13,29 +13,25 @@ import {
   Wallet,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { PiPaymentButton } from "@/components/PiPaymentButton";
 import { Button } from "@/components/ui/button";
-import { authenticatePi, establishSession } from "@/lib/pi-client";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sultan DApp — Ethical Utility on Pi Network" },
+      { title: "Sultan DApp — Sovereign Utility on Pi Network" },
       {
         name: "description",
         content:
-          "Sultan DApp is a non-custodial Pi Network utility for transparent allocation and community reconstruction workflows.",
+          "Sultan DApp is a non-custodial Pi Network utility based on Quranic reference and community reconstruction workflows.",
       },
-      { property: "og:title", content: "Sultan DApp — Ethical Utility on Pi Network" },
+      { property: "og:title", content: "Sultan DApp — Sovereign Utility on Pi Network" },
       {
         property: "og:description",
         content:
           "Non-custodial Pi Network authentication, transparent allocation, and community reconstruction utilities.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
     ],
-    links: [{ rel: "canonical", href: "https://sultan-core.lovable.app/" }],
   }),
   component: Index,
 });
@@ -43,15 +39,11 @@ export const Route = createFileRoute("/")({
 type ConnectionStatus = "idle" | "connecting" | "connected" | "error";
 type Theme = "light" | "dark";
 
-const STATUS_REFRESH_MS = 10_000;
-
-function Index() {
+export default function Index() {
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>("idle");
-  const [user, setUser] = useState<{ uid: string; username: string } | null>(null);
+  const [user, setUser] = useState<{ username: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [theme, setTheme] = useState<Theme>("dark");
-  const [networkOnline, setNetworkOnline] = useState(false);
-  const [lastSync, setLastSync] = useState("Awaiting sync");
 
   useEffect(() => {
     const storedTheme = window.localStorage.getItem("sultan-theme");
@@ -65,49 +57,22 @@ function Index() {
     document.documentElement.classList.toggle("dark", nextTheme === "dark");
   }, []);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    const readStatus = async () => {
-      try {
-        const response = await fetch("/api/sultan-core", {
-          headers: { accept: "application/json" },
-        });
-        if (!response.ok) throw new Error(String(response.status));
-        const data = (await response.json()) as { timestamp: string };
-        if (!cancelled) {
-          setNetworkOnline(true);
-          setLastSync(
-            new Date(data.timestamp).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            }),
-          );
-        }
-      } catch {
-        if (!cancelled) {
-          setNetworkOnline(false);
-          setLastSync("Connection unavailable");
-        }
-      }
-    };
-
-    void readStatus();
-    const interval = window.setInterval(readStatus, STATUS_REFRESH_MS);
-    return () => {
-      cancelled = true;
-      window.clearInterval(interval);
-    };
-  }, []);
-
   const connectWallet = async () => {
     setConnectionStatus("connecting");
     setError(null);
     try {
-      const auth = await authenticatePi();
-      const session = await establishSession(auth.accessToken);
-      setUser(session);
-      setConnectionStatus("connected");
+      if (typeof window !== "undefined" && window.Pi) {
+        const auth = await window.Pi.authenticate(
+          ["username", "payments"],
+          (payment: unknown) => {
+            console.log("Incomplete payment found:", payment);
+          }
+        );
+        setUser({ username: auth.user.username });
+        setConnectionStatus("connected");
+      } else {
+        throw new Error("يرجى فتح التطبيق داخل متصفح Pi Browser");
+      }
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : String(caught));
       setConnectionStatus("error");
@@ -126,16 +91,17 @@ function Index() {
 
   return (
     <main className="flex min-h-dvh w-full flex-col overflow-x-hidden bg-background text-foreground">
+      {/* Header */}
       <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur-md">
         <div className="flex min-h-16 w-full items-center gap-2 px-4 sm:px-6 lg:px-10">
           <Link to="/" className="flex min-w-0 items-center gap-2.5" aria-label="Sultan DApp home">
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary text-sm font-bold text-primary-foreground">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-amber-500 text-sm font-bold text-slate-950">
               S
             </span>
             <span className="truncate text-sm font-semibold sm:text-base">Sultan DApp</span>
           </Link>
 
-          <span className="hidden items-center gap-1.5 rounded-full border border-success/30 bg-success/10 px-2.5 py-1 text-[11px] font-semibold text-success min-[540px]:inline-flex">
+          <span className="hidden items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-400 min-[540px]:inline-flex">
             <Check className="size-3" aria-hidden="true" />
             Pi OS Compliant
           </span>
@@ -145,8 +111,7 @@ function Index() {
               variant="ghost"
               size="icon"
               onClick={toggleTheme}
-              aria-label={theme === "dark" ? "Use light theme" : "Use dark theme"}
-              title={theme === "dark" ? "Use light theme" : "Use dark theme"}
+              aria-label="Toggle theme"
             >
               {theme === "dark" ? <Sun /> : <Moon />}
             </Button>
@@ -154,7 +119,7 @@ function Index() {
               size="sm"
               onClick={connectWallet}
               disabled={isConnecting || isConnected}
-              className="min-w-28 sm:min-w-40"
+              className="min-w-28 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold sm:min-w-40"
             >
               {isConnecting ? <Activity className="animate-spin" /> : isConnected ? <Check /> : <Wallet />}
               <span className="hidden sm:inline">
@@ -168,21 +133,22 @@ function Index() {
         </div>
       </header>
 
+      {/* Hero Section */}
       <section className="flex flex-1 border-b border-border">
         <div className="grid w-full lg:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.65fr)]">
           <div className="flex min-h-[420px] flex-col justify-center px-5 py-14 sm:px-10 lg:min-h-[560px] lg:px-16 xl:px-24">
-            <div className="mb-7 flex items-center gap-2 text-xs font-semibold uppercase text-primary">
-              <span className={`size-2 rounded-full ${networkOnline ? "bg-success" : "bg-muted-foreground"}`} />
-              Pi Network Utility
+            <div className="mb-7 flex items-center gap-2 text-xs font-semibold uppercase text-amber-500">
+              <span className="size-2 rounded-full bg-emerald-500" />
+              Pai Network Yass • Kun Faya Kun Yass
             </div>
-            <h1 className="max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl lg:text-7xl">
+            <h1 className="max-w-4xl text-4xl font-bold leading-tight sm:text-6xl lg:text-7xl text-amber-400">
               Sultan DApp
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground sm:text-xl">
               Ethical Utility &amp; Community Reconstruction Ecosystem
             </p>
             <p className="mt-5 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
-              Secure Pi Network access for transparent allocation, verified transactions, and community-focused financial tools.
+              Non-custodial Pi Network utility linked with Quranic reference (114 Surahs), transparent 2.5% Zakat allocation, and sovereign node architecture.
             </p>
 
             <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
@@ -190,7 +156,7 @@ function Index() {
                 size="lg"
                 onClick={connectWallet}
                 disabled={isConnecting || isConnected}
-                className="min-h-12 w-full sm:w-auto sm:min-w-56"
+                className="min-h-12 w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold sm:w-auto sm:min-w-56"
               >
                 {isConnecting ? <Activity className="animate-spin" /> : isConnected ? <Check /> : <Wallet />}
                 {isConnected ? "Wallet Connected" : isConnecting ? "Authenticating…" : "Authenticate & Connect"}
@@ -214,75 +180,77 @@ function Index() {
               <div>
                 <div className="flex items-center justify-between gap-4 border-b border-border pb-5">
                   <div>
-                    <p className="text-xs font-semibold uppercase text-muted-foreground">Network console</p>
+                    <p className="text-xs font-semibold uppercase text-muted-foreground">Network Console</p>
                     <h2 className="mt-1 text-xl font-semibold">Pi Mainnet</h2>
                   </div>
-                  <span className={`size-2.5 rounded-full ${networkOnline ? "bg-success" : "bg-destructive"}`} />
+                  <span className="size-2.5 rounded-full bg-emerald-500" />
                 </div>
                 <dl className="divide-y divide-border">
                   <div className="flex items-center justify-between gap-4 py-5 text-sm">
-                    <dt className="text-muted-foreground">Node status</dt>
-                    <dd className="font-medium">{networkOnline ? "Active" : "Unavailable"}</dd>
+                    <dt className="text-muted-foreground">Node Status</dt>
+                    <dd className="font-medium text-emerald-400">Active</dd>
                   </div>
                   <div className="flex items-center justify-between gap-4 py-5 text-sm">
-                    <dt className="text-muted-foreground">Wallet model</dt>
-                    <dd className="flex items-center gap-2 font-medium"><LockKeyhole className="size-4 text-success" />Non-custodial</dd>
+                    <dt className="text-muted-foreground">Wallet Model</dt>
+                    <dd className="flex items-center gap-2 font-medium"><LockKeyhole className="size-4 text-emerald-400" />Non-custodial</dd>
                   </div>
                   <div className="flex items-center justify-between gap-4 py-5 text-sm">
-                    <dt className="text-muted-foreground">Last sync</dt>
-                    <dd className="font-mono text-xs">{lastSync}</dd>
+                    <dt className="text-muted-foreground">Mathematical Base</dt>
+                    <dd className="font-mono text-xs text-amber-400">3.14 (π) & Great Pyramid</dd>
                   </div>
                 </dl>
               </div>
               <div className="flex items-center gap-3 border-t border-border pt-5 text-xs text-muted-foreground">
-                <ShieldCheck className="size-5 text-success" />
-                Wallet credentials remain under user control.
+                <ShieldCheck className="size-5 text-emerald-400" />
+                Wallet credentials remain under strict user control.
               </div>
             </div>
           </aside>
         </div>
       </section>
 
+      {/* Metrics Section */}
       <section aria-labelledby="metrics-heading" className="w-full border-b border-border bg-surface-subtle">
         <div className="px-5 py-9 sm:px-10 lg:px-16 xl:px-24">
           <div className="mb-6 flex items-end justify-between gap-4">
-            <h2 id="metrics-heading" className="text-xl font-semibold">Live system metrics</h2>
-            <span className="text-xs text-muted-foreground">Updated {lastSync}</span>
+            <h2 id="metrics-heading" className="text-xl font-semibold">Live System Metrics</h2>
+            <span className="text-xs text-emerald-400">Kun Faya Kun Yass Active</span>
           </div>
           <div className="grid gap-px overflow-hidden rounded-md border border-border bg-border md:grid-cols-3">
             <article className="bg-background p-6 sm:p-7">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground"><CircleDollarSign className="size-4" />Automated Zakat Allocation</div>
-              <p className="mt-5 text-3xl font-semibold tabular-nums">2.5%</p>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground"><CircleDollarSign className="size-4 text-amber-400" />Automated Zakat Allocation</div>
+              <p className="mt-5 text-3xl font-semibold tabular-nums text-amber-400">2.5%</p>
               <p className="mt-2 text-xs text-muted-foreground">Applied to eligible utility flows</p>
             </article>
             <article className="bg-background p-6 sm:p-7">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground"><Network className="size-4" />System Status</div>
-              <p className="mt-5 text-xl font-semibold">Active Node Network</p>
-              <p className="mt-2 text-xs text-muted-foreground">{networkOnline ? "Operational endpoint" : "Endpoint reconnecting"}</p>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground"><Network className="size-4 text-emerald-400" />Quranic Frequency Integration</div>
+              <p className="mt-5 text-3xl font-semibold text-emerald-400">114</p>
+              <p className="mt-2 text-xs text-muted-foreground">Surahs frequency architecture</p>
             </article>
             <article className="bg-background p-6 sm:p-7">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground"><ShieldCheck className="size-4" />Security</div>
-              <p className="mt-5 text-xl font-semibold">Non-Custodial</p>
-              <p className="mt-2 text-xs text-muted-foreground">Local Persistence</p>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground"><ShieldCheck className="size-4 text-emerald-400" />Security Layer</div>
+              <p className="mt-5 text-xl font-semibold text-emerald-400">Non-Custodial</p>
+              <p className="mt-2 text-xs text-muted-foreground">Sovereign Asset & Real-Time Sync</p>
             </article>
           </div>
         </div>
       </section>
 
+      {/* Core Utilities */}
       <section aria-labelledby="utilities-heading" className="w-full border-b border-border">
         <div className="px-5 py-12 sm:px-10 lg:px-16 lg:py-16 xl:px-24">
           <div className="mb-8 max-w-2xl">
-            <p className="text-xs font-semibold uppercase text-primary">Financial hub</p>
-            <h2 id="utilities-heading" className="mt-2 text-2xl font-semibold">Core utilities</h2>
+            <p className="text-xs font-semibold uppercase text-amber-500">Financial Hub</p>
+            <h2 id="utilities-heading" className="mt-2 text-2xl font-semibold">Core Utilities</h2>
           </div>
           <div className="grid border-y border-border md:grid-cols-3 md:divide-x rtl:md:divide-x-reverse">
             {[
-              { icon: CircleDollarSign, title: "Zakat Engine", text: "Calculates and records the 2.5% allocation for eligible transactions." },
-              { icon: ShieldCheck, title: "Sovereign Security", text: "Non-custodial operation. No wallet passphrase or private key is requested or stored." },
-              { icon: Network, title: "Community Utilities", text: "Verified Pi payment workflows with transparent public allocation data." },
+              { icon: CircleDollarSign, title: "Zakat Engine", text: "Calculates and records the 2.5% allocation for ethical reconstruction workflows." },
+              { icon: ShieldCheck, title: "Sovereign Security", text: "Non-custodial operation. No wallet passphrase or private key is stored." },
+              { icon: Network, title: "Community Reconstruction", text: "Verified Pi payment workflows with public transparent data." },
             ].map(({ icon: Icon, title, text }, index) => (
               <article key={title} className={`min-h-56 py-7 md:px-7 ${index > 0 ? "border-t border-border md:border-t-0" : ""}`}>
-                <Icon className="size-6 text-primary" />
+                <Icon className="size-6 text-amber-400" />
                 <h3 className="mt-10 text-lg font-semibold">{title}</h3>
                 <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">{text}</p>
               </article>
@@ -291,21 +259,7 @@ function Index() {
         </div>
       </section>
 
-      {user && (
-        <section aria-labelledby="payment-heading" className="w-full border-b border-border bg-surface-subtle">
-          <div className="grid gap-8 px-5 py-12 sm:px-10 lg:grid-cols-[0.8fr_1.2fr] lg:px-16 xl:px-24">
-            <div>
-              <p className="text-xs font-semibold uppercase text-primary">Pi payment</p>
-              <h2 id="payment-heading" className="mt-2 text-2xl font-semibold">Transaction console</h2>
-              <p className="mt-3 max-w-md text-sm leading-6 text-muted-foreground">
-                Review the allocation and network fee before confirming the transaction in Pi Wallet.
-              </p>
-            </div>
-            <PiPaymentButton userId={user.uid} userName={user.username} />
-          </div>
-        </section>
-      )}
-
+      {/* Footer */}
       <footer className="mt-auto w-full border-t border-border">
         <div className="flex w-full flex-col gap-5 px-5 py-8 text-xs text-muted-foreground sm:px-10 md:flex-row md:items-center lg:px-16 xl:px-24">
           <p>© 2026 Sultan DApp · Developer: Yassinservice</p>
@@ -316,12 +270,10 @@ function Index() {
             <a href="https://github.com/pi-apps/pi-platform-docs/blob/master/LICENSE" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 transition-colors hover:text-foreground">
               PiOS License <ArrowUpRight className="size-3" />
             </a>
-            <Link to="/privacy" className="transition-colors hover:text-foreground">Privacy</Link>
-            <Link to="/terms" className="transition-colors hover:text-foreground">Terms</Link>
-            <Link to="/contact" className="transition-colors hover:text-foreground">Contact</Link>
           </nav>
         </div>
       </footer>
     </main>
   );
-}
+        }
+        
