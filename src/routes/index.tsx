@@ -1,6 +1,5 @@
-
-    <div className="min-h-screen bg-[#070b14] text-amber-100 font-sans pb-20">
-      
+export default function Index() {
+  return (
     <div className="min-h-screen bg-[#070b14] text-amber-100 font-sans pb-20">
       {/* رأس الوثيقة السيادية */}
       <header className="p-4 bg-gradient-to-r from-amber-600 to-amber-400 text-slate-950 text-center font-bold shadow-lg">
@@ -40,7 +39,7 @@
           <span className="text-xs text-slate-300">Sarh Monitor - Live</span>
         </div>
 
-        {/* خدمات الإعمار والرزق (الـ 27) */}
+        {/* خدمات الإعمار والرزق الـ 27 */}
         <div className="mt-6">
           <h2 className="text-center text-amber-400 font-bold mb-3">تبيان الخدمات الـ 27 (الإعمار والرزق)</h2>
           <div className="grid grid-cols-3 gap-2 text-center text-xs">
@@ -61,5 +60,5 @@
       </nav>
     </div>
   );
-        }
-            
+                }
+              
