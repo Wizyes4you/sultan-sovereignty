@@ -164,6 +164,9 @@ const COPY = {
 
 const LANGUAGE_LABELS: Record<Language, string> = { ar: "AR", en: "EN", fr: "FR", es: "ES" };
 
+// 114-based refresh cadence for the reconstruction telemetry stream.
+const TELEMETRY_CADENCE_MS = Math.round(1_000_000 / 114);
+
 function Index() {
   const [status, setStatus] = useState<Status>("idle");
   const [user, setUser] = useState<{ uid: string; username: string } | null>(null);
@@ -216,7 +219,7 @@ function Index() {
       }
     };
     void poll();
-    const interval = window.setInterval(poll, 15_000);
+    const interval = window.setInterval(poll, TELEMETRY_CADENCE_MS);
     return () => {
       cancelled = true;
       window.clearInterval(interval);
