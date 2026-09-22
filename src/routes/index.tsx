@@ -1,4 +1,4 @@
-بسم الله الرحمن الرحيم 
+
     <div className="min-h-screen bg-[#070b14] text-amber-100 font-sans pb-20">
       
     <div className="min-h-screen bg-[#070b14] text-amber-100 font-sans pb-20">
