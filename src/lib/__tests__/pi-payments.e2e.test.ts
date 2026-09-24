@@ -15,11 +15,7 @@
  * assert the UI/SDK quote matches that on-chain fee exactly.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import {
-  quoteGas,
-  MAINNET_BASE_FEE_STROOPS,
-  STROOPS_PER_PI,
-} from "../pi-gas";
+import { quoteGas, MAINNET_BASE_FEE_STROOPS, STROOPS_PER_PI } from "../pi-gas";
 
 interface MockPayment {
   identifier: string;
@@ -79,9 +75,7 @@ function installPiMocks(opts: {
     capturedPayment = { data, cbs };
     // Simulate the wallet's lifecycle: server approval, then chain broadcast.
     queueMicrotask(() => cbs.onReadyForServerApproval(opts.paymentId));
-    queueMicrotask(() =>
-      cbs.onReadyForServerCompletion(opts.paymentId, opts.txid),
-    );
+    queueMicrotask(() => cbs.onReadyForServerCompletion(opts.paymentId, opts.txid));
   });
 
   (globalThis as unknown as { window: unknown }).window = {
@@ -136,8 +130,7 @@ describe("Pi Mainnet payment e2e: quote · metadata · UI · RPC parity", () => 
     // 2. Metadata stamping on the payment object handed to the Pi Wallet.
     const captured = mocks.getCapturedPayment();
     expect(captured).not.toBeNull();
-    const stamped = (captured!.data as { metadata: { gas: unknown; orderId: string } })
-      .metadata;
+    const stamped = (captured!.data as { metadata: { gas: unknown; orderId: string } }).metadata;
     expect(stamped.orderId).toBe("e2e-1");
     expect(stamped.gas).toEqual({
       network: expected.network,
@@ -210,8 +203,8 @@ describe("Pi Mainnet payment e2e: quote · metadata · UI · RPC parity", () => 
     });
 
     expect(result.gas).toEqual(previewQuote);
-    const stamped = (mocks.getCapturedPayment()!.data as { metadata: { gas: unknown } })
-      .metadata.gas;
+    const stamped = (mocks.getCapturedPayment()!.data as { metadata: { gas: unknown } }).metadata
+      .gas;
     expect(stamped).toMatchObject({
       totalFeeStroops: previewQuote.totalFeeStroops,
       totalFeePi: previewQuote.totalFeePi,

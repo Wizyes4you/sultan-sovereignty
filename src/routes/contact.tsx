@@ -8,9 +8,21 @@ import { Button } from "@/components/ui/button";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name must be under 100 characters"),
-  email: z.string().trim().email("Please enter a valid email").max(255, "Email must be under 255 characters"),
-  subject: z.string().trim().min(1, "Subject is required").max(200, "Subject must be under 200 characters"),
-  message: z.string().trim().min(1, "Message is required").max(2000, "Message must be under 2000 characters"),
+  email: z
+    .string()
+    .trim()
+    .email("Please enter a valid email")
+    .max(255, "Email must be under 255 characters"),
+  subject: z
+    .string()
+    .trim()
+    .min(1, "Subject is required")
+    .max(200, "Subject must be under 200 characters"),
+  message: z
+    .string()
+    .trim()
+    .min(1, "Message is required")
+    .max(2000, "Message must be under 2000 characters"),
 });
 
 type ContactForm = z.infer<typeof contactSchema>;
@@ -34,9 +46,7 @@ export const Route = createFileRoute("/contact")({
       { name: "twitter:card", content: "summary" },
       { property: "og:url", content: "https://sultan-core.lovable.app/contact" },
     ],
-    links: [
-      { rel: "canonical", href: "https://sultan-core.lovable.app/contact" },
-    ],
+    links: [{ rel: "canonical", href: "https://sultan-core.lovable.app/contact" }],
   }),
   component: ContactPage,
 });
@@ -101,8 +111,18 @@ function ContactPage() {
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="sultan-glass rounded-2xl p-5 text-center">
             <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-amber-500/20 text-amber-300">
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
               </svg>
             </div>
             <p className="text-xs uppercase tracking-wider text-amber-200/70">Email</p>
@@ -110,9 +130,23 @@ function ContactPage() {
           </div>
           <div className="sultan-glass rounded-2xl p-5 text-center">
             <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-amber-500/20 text-amber-300">
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
               </svg>
             </div>
             <p className="text-xs uppercase tracking-wider text-amber-200/70">Platform</p>
@@ -125,13 +159,20 @@ function ContactPage() {
           {submitted ? (
             <div className="text-center py-8">
               <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-300">
-                <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg
+                  className="h-7 w-7"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
               <h2 className="text-xl font-semibold text-white">Message Received</h2>
               <p className="mt-2 text-sm text-white/70">
-                Thank you for reaching out. The Palace stewards will review your message and respond through the appropriate channel.
+                Thank you for reaching out. The Palace stewards will review your message and respond
+                through the appropriate channel.
               </p>
               <button
                 onClick={() => {
@@ -146,7 +187,10 @@ function ContactPage() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5" noValidate>
               <div>
-                <label htmlFor="name" className="mb-1.5 block text-xs font-medium text-amber-200/80">
+                <label
+                  htmlFor="name"
+                  className="mb-1.5 block text-xs font-medium text-amber-200/80"
+                >
                   Name
                 </label>
                 <Input
@@ -162,7 +206,10 @@ function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="email" className="mb-1.5 block text-xs font-medium text-amber-200/80">
+                <label
+                  htmlFor="email"
+                  className="mb-1.5 block text-xs font-medium text-amber-200/80"
+                >
                   Email
                 </label>
                 <Input
@@ -178,7 +225,10 @@ function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="subject" className="mb-1.5 block text-xs font-medium text-amber-200/80">
+                <label
+                  htmlFor="subject"
+                  className="mb-1.5 block text-xs font-medium text-amber-200/80"
+                >
                   Subject
                 </label>
                 <Input
@@ -194,7 +244,10 @@ function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="message" className="mb-1.5 block text-xs font-medium text-amber-200/80">
+                <label
+                  htmlFor="message"
+                  className="mb-1.5 block text-xs font-medium text-amber-200/80"
+                >
                   Message
                 </label>
                 <Textarea
@@ -218,7 +271,8 @@ function ContactPage() {
               </Button>
 
               <p className="text-center text-[11px] text-white/40">
-                This form submits to the SULTAN support queue. Response times may vary based on inquiry volume.
+                This form submits to the SULTAN support queue. Response times may vary based on
+                inquiry volume.
               </p>
             </form>
           )}
@@ -243,8 +297,18 @@ function ContactPage() {
             to="/privacy"
             className="inline-flex items-center gap-2 text-sm text-amber-200/70 transition-colors hover:text-amber-200"
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
             </svg>
             Privacy Policy
           </Link>

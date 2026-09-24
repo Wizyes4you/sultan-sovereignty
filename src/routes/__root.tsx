@@ -74,17 +74,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { property: "og:site_name", content: "SULTAN Sovereign Command" },
       { name: "theme-color", content: "#07111d" },
-      { name: "description", content: "Sovereign command center for reconstruction, covenant integrity, regional governance, and secure Pi economy coordination." },
+      {
+        name: "description",
+        content:
+          "Sovereign command center for reconstruction, covenant integrity, regional governance, and secure Pi economy coordination.",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap",
+      },
     ],
-    scripts: [
-      { src: "https://sdk.minepi.com/pi-sdk.js" },
-    ],
+    scripts: [{ src: "https://sdk.minepi.com/pi-sdk.js" }],
   }),
   shellComponent: RootShell,
   component: RootComponent,
