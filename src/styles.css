@@ -152,11 +152,17 @@
     letter-spacing: 0;
   }
 
-  button, select, a { -webkit-tap-highlight-color: transparent; }
+  button,
+  select,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
@@ -170,7 +176,8 @@
   --sultan-gold-deep: #c9a14a;
   --gradient-palace: radial-gradient(ellipse at top, #1a1f5c 0%, #0a0d24 45%, #05060f 100%);
   --gradient-gold: linear-gradient(135deg, #f5d27a 0%, #e0b358 50%, #c9a14a 100%);
-  --shadow-palace: 0 30px 80px -20px rgba(167, 139, 250, 0.35), 0 10px 40px -10px rgba(245, 210, 122, 0.25);
+  --shadow-palace:
+    0 30px 80px -20px rgba(167, 139, 250, 0.35), 0 10px 40px -10px rgba(245, 210, 122, 0.25);
 }
 
 @utility sultan-bg {
@@ -182,7 +189,9 @@
   backdrop-filter: blur(24px) saturate(140%);
   -webkit-backdrop-filter: blur(24px) saturate(140%);
   border: 1px solid rgba(245, 210, 122, 0.25);
-  box-shadow: var(--shadow-palace), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow:
+    var(--shadow-palace),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 @utility sultan-gold-text {
@@ -196,31 +205,66 @@
   background: var(--gradient-gold);
   color: #1a1206;
   font-weight: 600;
-  box-shadow: 0 8px 30px -8px rgba(245, 210, 122, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow:
+    0 8px 30px -8px rgba(245, 210, 122, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 14px 40px -10px rgba(245, 210, 122, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    box-shadow:
+      0 14px 40px -10px rgba(245, 210, 122, 0.75),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
 }
 
 @keyframes sultan-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
 }
 @keyframes sultan-twinkle {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 @keyframes sultan-pulse-glow {
-  0%, 100% { box-shadow: 0 0 30px rgba(245, 210, 122, 0.3), 0 0 60px rgba(167, 139, 250, 0.2); }
-  50% { box-shadow: 0 0 50px rgba(245, 210, 122, 0.6), 0 0 100px rgba(167, 139, 250, 0.4); }
+  0%,
+  100% {
+    box-shadow:
+      0 0 30px rgba(245, 210, 122, 0.3),
+      0 0 60px rgba(167, 139, 250, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 50px rgba(245, 210, 122, 0.6),
+      0 0 100px rgba(167, 139, 250, 0.4);
+  }
 }
 @keyframes sultan-spin-slow {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-@utility sultan-float { animation: sultan-float 6s ease-in-out infinite; }
-@utility sultan-twinkle { animation: sultan-twinkle 3s ease-in-out infinite; }
-@utility sultan-pulse-glow { animation: sultan-pulse-glow 4s ease-in-out infinite; }
-@utility sultan-spin-slow { animation: sultan-spin-slow 40s linear infinite; }
+@utility sultan-float {
+  animation: sultan-float 6s ease-in-out infinite;
+}
+@utility sultan-twinkle {
+  animation: sultan-twinkle 3s ease-in-out infinite;
+}
+@utility sultan-pulse-glow {
+  animation: sultan-pulse-glow 4s ease-in-out infinite;
+}
+@utility sultan-spin-slow {
+  animation: sultan-spin-slow 40s linear infinite;
+}

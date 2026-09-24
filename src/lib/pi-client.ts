@@ -60,8 +60,6 @@ function backendUrl(path: string): string {
   return `${BACKEND_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
-
-
 let initPromise: Promise<void> | null = null;
 
 function waitForPi(timeoutMs = 8000): Promise<PiSDK> {
@@ -190,4 +188,3 @@ export async function createPiPayment(
     });
   });
 }
-

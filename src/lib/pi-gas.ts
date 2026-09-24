@@ -81,9 +81,7 @@ export function quoteGas(
 /** Throws if a quoted/observed fee exceeds our safety ceiling. */
 export function assertFeeAcceptable(feeStroops: number): void {
   if (feeStroops > MAX_ACCEPTABLE_FEE_STROOPS) {
-    throw new Error(
-      `Gas fee ${feeStroops} stroops exceeds maximum ${MAX_ACCEPTABLE_FEE_STROOPS}`,
-    );
+    throw new Error(`Gas fee ${feeStroops} stroops exceeds maximum ${MAX_ACCEPTABLE_FEE_STROOPS}`);
   }
 }
 

@@ -3,7 +3,6 @@ import { createPiPayment, quoteGas, type GasQuote } from "@/lib/pi-client";
 import { Check, LoaderCircle, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-
 type PaymentStatus = "idle" | "pending" | "success" | "error";
 
 interface PiPaymentButtonProps {
@@ -30,7 +29,6 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
     }
   }, []);
 
-
   const handlePayment = async () => {
     setError(null);
     setStatus("pending");
@@ -48,7 +46,9 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
 
       const paymentData = {
         amount: totalAmount,
-        memo: import.meta.env.VITE_PI_PAYMENT_MEMO || "Sultan Application Sovereign Validation - Frequency 114",
+        memo:
+          import.meta.env.VITE_PI_PAYMENT_MEMO ||
+          "Sultan Application Sovereign Validation - Frequency 114",
         metadata: {
           orderId: "sultan-sovereignty-114",
           userId,
@@ -76,7 +76,6 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
         gas: result.gas,
         metadata: paymentData.metadata,
       });
-
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
       setError(errorMessage);
@@ -124,7 +123,8 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
                 <span className="font-semibold">Base Transaction:</span> 1.00 Pi
               </p>
               <p className="text-xs text-muted-foreground">
-                <span className="font-semibold">Humanitarian Donation (2.5%):</span> {donationAmount.toFixed(4)} Pi
+                <span className="font-semibold">Humanitarian Donation (2.5%):</span>{" "}
+                {donationAmount.toFixed(4)} Pi
               </p>
               <p className="text-xs font-semibold text-foreground">
                 Total Contributed: {(1 + donationAmount).toFixed(4)} Pi
@@ -132,15 +132,14 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
               {gas && (
                 <p className="text-xs text-muted-foreground">
                   <span className="font-semibold">Network Gas Fee:</span>{" "}
-                  {gas.totalFeePi.toFixed(7)} Pi ({gas.totalFeeStroops} stroops ·{" "}
-                  {gas.operations} op)
+                  {gas.totalFeePi.toFixed(7)} Pi ({gas.totalFeeStroops} stroops · {gas.operations}{" "}
+                  op)
                 </p>
               )}
             </div>
           )}
         </div>
       )}
-
 
       {status === "error" && error && (
         <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3">
@@ -181,20 +180,18 @@ export function PiPaymentButton({ userId = "yassinservice", userName }: PiPaymen
               <span className="text-right font-mono font-semibold">1.0250 Pi</span>
             </div>
             <p className="mt-3 border-t border-border pt-2.5 text-[10px] leading-relaxed text-muted-foreground">
-              The 2.5% flows transparently to humanitarian reconstruction (Gaza · Sudan)
-              and is recorded on-chain as payment metadata for every pioneer to witness.
+              The 2.5% flows transparently to humanitarian reconstruction (Gaza · Sudan) and is
+              recorded on-chain as payment metadata for every pioneer to witness.
             </p>
           </div>
           {previewGas && (
             <p className="text-center">
-              Mainnet gas: {previewGas.totalFeePi.toFixed(7)} Pi ·{" "}
-              {previewGas.baseFeeStroops} stroops/op · est. total{" "}
-              {previewGas.grossPi.toFixed(7)} Pi
+              Mainnet gas: {previewGas.totalFeePi.toFixed(7)} Pi · {previewGas.baseFeeStroops}{" "}
+              stroops/op · est. total {previewGas.grossPi.toFixed(7)} Pi
             </p>
           )}
         </div>
       )}
-
     </div>
   );
 }

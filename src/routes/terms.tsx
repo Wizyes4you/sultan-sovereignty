@@ -40,7 +40,11 @@ export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
       { title: "شروط الخدمة | Terms of Service - SULTAN" },
-      { name: "description", content: "SULTAN Terms of Service for ethical conduct, Pi Browser integration, and fair use." },
+      {
+        name: "description",
+        content:
+          "SULTAN Terms of Service for ethical conduct, Pi Browser integration, and fair use.",
+      },
       { property: "og:title", content: "شروط الخدمة | Terms of Service - SULTAN" },
     ],
     links: [{ rel: "canonical", href: "https://sultan-sovereignty.vercel.app/terms" }],
@@ -54,35 +58,65 @@ function TermsPage() {
       <SultanBackdrop />
       <div className="relative z-10 mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-8 sm:px-6 sm:py-14">
         <header className="mb-8 border-b border-amber-200/15 pb-8">
-          <nav aria-label="Legal navigation" className="mb-10 flex flex-wrap items-center justify-between gap-4 text-sm">
-            <Link to="/" className="font-semibold tracking-[0.2em] text-amber-200 transition-colors hover:text-white">SULTAN</Link>
+          <nav
+            aria-label="Legal navigation"
+            className="mb-10 flex flex-wrap items-center justify-between gap-4 text-sm"
+          >
+            <Link
+              to="/"
+              className="font-semibold tracking-[0.2em] text-amber-200 transition-colors hover:text-white"
+            >
+              SULTAN
+            </Link>
             <div className="flex gap-4 text-white/60">
-              <Link to="/privacy" className="transition-colors hover:text-amber-200">Privacy</Link>
-              <Link to="/terms" className="text-amber-200" aria-current="page">Terms</Link>
+              <Link to="/privacy" className="transition-colors hover:text-amber-200">
+                Privacy
+              </Link>
+              <Link to="/terms" className="text-amber-200" aria-current="page">
+                Terms
+              </Link>
             </div>
           </nav>
-          <p className="mb-3 text-right text-sm text-amber-200/75" dir="rtl">شروط الخدمة</p>
-          <h1 className="sultan-gold-text text-3xl font-bold tracking-tight sm:text-5xl">Terms of Service</h1>
-          <p className="mt-4 max-w-2xl text-sm leading-7 text-white/65">Guidelines for ethical conduct, fair use, and responsible participation in the SULTAN Pi Network application.</p>
-          <p className="mt-5 text-xs uppercase tracking-[0.18em] text-white/40">Effective date: September 24, 2026</p>
+          <p className="mb-3 text-right text-sm text-amber-200/75" dir="rtl">
+            شروط الخدمة
+          </p>
+          <h1 className="sultan-gold-text text-3xl font-bold tracking-tight sm:text-5xl">
+            Terms of Service
+          </h1>
+          <p className="mt-4 max-w-2xl text-sm leading-7 text-white/65">
+            Guidelines for ethical conduct, fair use, and responsible participation in the SULTAN Pi
+            Network application.
+          </p>
+          <p className="mt-5 text-xs uppercase tracking-[0.18em] text-white/40">
+            Effective date: September 24, 2026
+          </p>
         </header>
 
         <div className="sultan-glass mb-8 rounded-2xl p-5 sm:p-6">
-          <p className="text-sm leading-7 text-amber-100/85">SULTAN is built around integrity, accountability, and fair access. Please read these terms before using Pi authentication or any connected service flow.</p>
+          <p className="text-sm leading-7 text-amber-100/85">
+            SULTAN is built around integrity, accountability, and fair access. Please read these
+            terms before using Pi authentication or any connected service flow.
+          </p>
         </div>
 
         <div className="space-y-4">
           {sections.map((section) => (
             <section key={section.title} className="sultan-glass rounded-2xl p-5 sm:p-7">
-              <h2 className="mb-3 text-base font-semibold leading-7 text-amber-100 sm:text-lg">{section.title}</h2>
+              <h2 className="mb-3 text-base font-semibold leading-7 text-amber-100 sm:text-lg">
+                {section.title}
+              </h2>
               <p className="text-sm leading-7 text-white/75">{section.body}</p>
             </section>
           ))}
         </div>
 
         <footer className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-amber-200/15 pt-6 text-sm text-white/55">
-          <Link to="/" className="transition-colors hover:text-amber-200">← Return to SULTAN</Link>
-          <Link to="/privacy" className="text-amber-200 transition-colors hover:text-white">Read Privacy Policy →</Link>
+          <Link to="/" className="transition-colors hover:text-amber-200">
+            ← Return to SULTAN
+          </Link>
+          <Link to="/privacy" className="text-amber-200 transition-colors hover:text-white">
+            Read Privacy Policy →
+          </Link>
         </footer>
       </div>
     </main>
