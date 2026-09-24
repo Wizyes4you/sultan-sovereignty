@@ -72,7 +72,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { property: "og:site_name", content: "SULTAN" },
+      { property: "og:site_name", content: "SULTAN Sovereign Command" },
+      { name: "theme-color", content: "#07111d" },
+      { name: "description", content: "Sovereign command center for reconstruction, covenant integrity, regional governance, and secure Pi economy coordination." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -92,7 +94,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="ar" dir="ltr">
       <head>
         <HeadContent />
       </head>
