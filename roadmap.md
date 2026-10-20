@@ -4,4 +4,5 @@
 - [x] Add explicit wallet authentication and theme support
 - [x] Restyle the payment flow to match the dashboard
 - [x] Update global design tokens and page metadata
+- [ ] Add a multilingual, AI-assisted Pi payment/RPC troubleshooting panel grounded in documented error states
 - [ ] Verify tests and mobile/desktop rendering
