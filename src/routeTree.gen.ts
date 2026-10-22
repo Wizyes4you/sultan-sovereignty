@@ -9,31 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TermsRouteImport } from './routes/terms'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as ContactRouteImport } from './routes/contact'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiSultanCoreRouteImport } from './routes/api/sultan-core'
-import { Route as ApiReconstructionRouteImport } from './routes/api/reconstruction'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ApiEstablishSessionRouteImport } from './routes/api/establish-session'
-import { Route as ApiPublicSidraMaskRouteImport } from './routes/api/public/sidra-mask'
-import { Route as ApiPaymentsCompleteRouteImport } from './routes/api/payments/complete'
+import { Route as ApiReconstructionRouteImport } from './routes/api/reconstruction'
+import { Route as ApiSultanCoreRouteImport } from './routes/api/sultan-core'
 import { Route as ApiPaymentsApproveRouteImport } from './routes/api/payments/approve'
+import { Route as ApiPaymentsCompleteRouteImport } from './routes/api/payments/complete'
+import { Route as ApiPublicSidraMaskRouteImport } from './routes/api/public/sidra-mask'
 
-const TermsRoute = TermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -41,19 +31,19 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiSultanCoreRoute = ApiSultanCoreRouteImport.update({
-  id: '/api/sultan-core',
-  path: '/api/sultan-core',
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiReconstructionRoute = ApiReconstructionRouteImport.update({
-  id: '/api/reconstruction',
-  path: '/api/reconstruction',
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiEstablishSessionRoute = ApiEstablishSessionRouteImport.update({
@@ -61,9 +51,19 @@ const ApiEstablishSessionRoute = ApiEstablishSessionRouteImport.update({
   path: '/api/establish-session',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicSidraMaskRoute = ApiPublicSidraMaskRouteImport.update({
-  id: '/api/public/sidra-mask',
-  path: '/api/public/sidra-mask',
+const ApiReconstructionRoute = ApiReconstructionRouteImport.update({
+  id: '/api/reconstruction',
+  path: '/api/reconstruction',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSultanCoreRoute = ApiSultanCoreRouteImport.update({
+  id: '/api/sultan-core',
+  path: '/api/sultan-core',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPaymentsApproveRoute = ApiPaymentsApproveRouteImport.update({
+  id: '/api/payments/approve',
+  path: '/api/payments/approve',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPaymentsCompleteRoute = ApiPaymentsCompleteRouteImport.update({
@@ -71,9 +71,9 @@ const ApiPaymentsCompleteRoute = ApiPaymentsCompleteRouteImport.update({
   path: '/api/payments/complete',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPaymentsApproveRoute = ApiPaymentsApproveRouteImport.update({
-  id: '/api/payments/approve',
-  path: '/api/payments/approve',
+const ApiPublicSidraMaskRoute = ApiPublicSidraMaskRouteImport.update({
+  id: '/api/public/sidra-mask',
+  path: '/api/public/sidra-mask',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -175,25 +175,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -203,25 +189,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/sultan-core': {
-      id: '/api/sultan-core'
-      path: '/api/sultan-core'
-      fullPath: '/api/sultan-core'
-      preLoaderRoute: typeof ApiSultanCoreRouteImport
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/reconstruction': {
-      id: '/api/reconstruction'
-      path: '/api/reconstruction'
-      fullPath: '/api/reconstruction'
-      preLoaderRoute: typeof ApiReconstructionRouteImport
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/establish-session': {
@@ -231,11 +217,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiEstablishSessionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/sidra-mask': {
-      id: '/api/public/sidra-mask'
-      path: '/api/public/sidra-mask'
-      fullPath: '/api/public/sidra-mask'
-      preLoaderRoute: typeof ApiPublicSidraMaskRouteImport
+    '/api/reconstruction': {
+      id: '/api/reconstruction'
+      path: '/api/reconstruction'
+      fullPath: '/api/reconstruction'
+      preLoaderRoute: typeof ApiReconstructionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/sultan-core': {
+      id: '/api/sultan-core'
+      path: '/api/sultan-core'
+      fullPath: '/api/sultan-core'
+      preLoaderRoute: typeof ApiSultanCoreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/payments/approve': {
+      id: '/api/payments/approve'
+      path: '/api/payments/approve'
+      fullPath: '/api/payments/approve'
+      preLoaderRoute: typeof ApiPaymentsApproveRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/payments/complete': {
@@ -245,11 +245,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPaymentsCompleteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/payments/approve': {
-      id: '/api/payments/approve'
-      path: '/api/payments/approve'
-      fullPath: '/api/payments/approve'
-      preLoaderRoute: typeof ApiPaymentsApproveRouteImport
+    '/api/public/sidra-mask': {
+      id: '/api/public/sidra-mask'
+      path: '/api/public/sidra-mask'
+      fullPath: '/api/public/sidra-mask'
+      preLoaderRoute: typeof ApiPublicSidraMaskRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
