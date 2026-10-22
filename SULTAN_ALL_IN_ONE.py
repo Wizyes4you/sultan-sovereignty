@@ -9,6 +9,19 @@ from datetime import datetime, timezone
 
 
 @dataclass
+class SensesActivation:
+    senses: list[str] = field(default_factory=lambda: ["Hearing", "Vision", "Speech", "Touch", "Smell", "Intuition", "Awareness"])
+    keys: list[str] = field(default_factory=lambda: ["Hadid", "Hashr", "Saff", "Jumuah", "Taghabun", "A'la", "Yaseen"])
+
+    def activate_sensors(self) -> dict[str, object]:
+        return {
+            "status": "active",
+            "sensors": [{"sense": sense, "key": key, "status": "synced"} for sense, key in zip(self.senses, self.keys)],
+            "heart_core": "يس والقرآن الحكيم",
+        }
+
+
+@dataclass
 class SultanOmniSystem:
     identity: str = "SULTAN_YASEEN_SOVEREIGN"
     engine: str = "KUN_FAYAKUN_LOGIC"

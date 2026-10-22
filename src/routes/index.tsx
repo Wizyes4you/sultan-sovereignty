@@ -32,6 +32,17 @@ function Index() {
   const [wallet, setWallet] = useState<"idle" | "connecting" | "connected">("idle");
   const [username, setUsername] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [sensesActive, setSensesActive] = useState(false);
+
+  const senses = [
+    ["Hearing", "Hadid"],
+    ["Vision", "Hashr"],
+    ["Speech", "Saff"],
+    ["Touch", "Jumuah"],
+    ["Smell", "Taghabun"],
+    ["Intuition", "A'la"],
+    ["Awareness", "Yaseen"],
+  ];
 
   const connectWallet = async () => {
     setWallet("connecting");
@@ -88,6 +99,16 @@ function Index() {
         <section id="matrix" className="mt-16 grid gap-4 md:grid-cols-3">{gates.map(({ icon: Icon, label, value, detail }) => <div key={label} className="sultan-glass rounded-2xl p-5"><div className="flex items-start justify-between"><Icon className="size-5 text-[#f5d27a]" /><span className="text-[10px] tracking-[.2em] text-emerald-300">LIVE</span></div><p className="mt-8 text-xs uppercase tracking-[.22em] text-white/45">{label}</p><p className="mt-2 text-xl font-semibold tracking-tight">{value}</p><p className="mt-1 text-xs text-white/45">{detail}</p></div>)}</section>
 
         <section className="mt-4 grid gap-4 lg:grid-cols-[1.25fr_.75fr]">
+          <div className="sultan-glass rounded-2xl p-6 lg:col-span-2">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div><p className="text-xs uppercase tracking-[.25em] text-[#f5d27a]">Seven senses activation</p><h2 className="mt-2 text-2xl font-semibold">Calibrate the heart core</h2><p className="mt-2 max-w-xl text-sm leading-6 text-white/50">Seven perception channels mapped to their Surah keys. Activation stays local and gives the dashboard a clear, auditable state.</p></div>
+              <Button onClick={() => setSensesActive(true)} disabled={sensesActive} className="sultan-gold-btn rounded-lg">{sensesActive ? "Sensors synced" : "Activate sensors"}</Button>
+            </div>
+            <div className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              {senses.map(([sense, key], index) => <div key={sense} className={`rounded-xl border p-3 transition-colors ${sensesActive ? "border-emerald-300/25 bg-emerald-300/[.06]" : "border-white/10 bg-black/10"}`}><div className="flex items-center justify-between"><span className="text-sm">{sense}</span><span className={`size-1.5 rounded-full ${sensesActive ? "bg-emerald-300" : "bg-white/25"}`} /></div><p className="mt-2 text-[10px] uppercase tracking-[.18em] text-white/40">Surah key · {key}</p>{sensesActive && <p className="mt-2 text-[10px] uppercase tracking-[.16em] text-emerald-200">Synced to heart core</p>}</div>)}
+            </div>
+            {sensesActive && <p className="mt-5 border-t border-white/10 pt-4 text-xs text-[#f5d27a]">يس والقرآن الحكيم · نور الـ 114 كوداً · Yastawi stable</p>}
+          </div>
           <div className="sultan-glass rounded-2xl p-6"><div className="flex items-center justify-between"><div><p className="text-xs uppercase tracking-[.25em] text-[#f5d27a]">Raghadan protocol</p><h2 className="mt-2 text-2xl font-semibold">Wealth gates</h2></div><LockKeyhole className="size-5 text-white/35" /></div><div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">{[["2.5%", "Zakat allocation"], ["7", "Senses synced"], ["8", "Human need gates"], ["∞", "Expansion horizon"]].map(([value, label]) => <div key={label} className="rounded-xl border border-white/10 bg-black/10 p-4"><p className="text-2xl font-semibold text-[#f5d27a]">{value}</p><p className="mt-2 text-[10px] leading-4 text-white/45">{label}</p></div>)}</div></div>
           <div className="sultan-glass rounded-2xl p-6"><div className="flex items-center gap-3"><div className="grid size-9 place-items-center rounded-lg bg-[#f5d27a]/10 text-[#f5d27a]"><Globe2 className="size-4" /></div><div><p className="text-xs uppercase tracking-[.2em] text-white/45">Pi mainnet utility</p><p className="font-medium">Non-custodial bridge</p></div></div><p className="mt-6 text-sm leading-6 text-white/55">Connect your wallet to unlock the sovereign payment rail and route value through the Raghadan flow.</p><div className="mt-5" dir="ltr">{wallet === "connected" ? <PiPaymentButton userName={username ?? undefined} /> : <Button variant="outline" onClick={connectWallet} className="w-full border-[#f5d27a]/30 text-[#f5d27a] hover:bg-[#f5d27a]/10">Connect wallet to continue</Button>}</div></div>
         </section>
