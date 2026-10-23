@@ -33,6 +33,7 @@ function Index() {
   const [username, setUsername] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sensesActive, setSensesActive] = useState(false);
+  const [constitutionOpen, setConstitutionOpen] = useState(false);
 
   const senses = [
     ["Hearing", "Hadid"],
@@ -85,8 +86,9 @@ function Index() {
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#f5d27a]/25 bg-[#f5d27a]/[.06] px-3 py-1.5 text-[10px] uppercase tracking-[.25em] text-[#f5d27a]"><Activity className="size-3" /> Kun Fayakun Yas</div>
             <h1 className="max-w-3xl text-5xl font-semibold leading-[.98] tracking-[-.05em] sm:text-7xl">Authority, <span className="sultan-gold-text">made visible.</span></h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-white/60">A crystalline command layer for aligned intelligence, sovereign infrastructure, and transparent Pi utility. Eight gates. One living system.</p>
-            <div className="mt-8 flex flex-wrap gap-3"><Button className="sultan-gold-btn rounded-lg px-5" onClick={() => document.getElementById("matrix")?.scrollIntoView({ behavior: "smooth" })}>Open the matrix <ArrowUpRight data-icon="inline-end" /></Button><Button variant="outline" className="rounded-lg border-white/15 bg-white/5 text-white hover:bg-white/10">Read constitution</Button></div>
-            {error && <p className="mt-4 text-xs text-rose-300">{error}</p>}
+            <div className="mt-8 flex flex-wrap gap-3"><Button className="sultan-gold-btn rounded-lg px-5" onClick={() => document.getElementById("matrix")?.scrollIntoView({ behavior: "smooth" })}>Open the matrix <ArrowUpRight data-icon="inline-end" /></Button><Button variant="outline" onClick={() => setConstitutionOpen((open) => !open)} aria-expanded={constitutionOpen} className="rounded-lg border-white/15 bg-white/5 text-white hover:bg-white/10">{constitutionOpen ? "Hide constitution" : "Read constitution"}</Button></div>
+            {constitutionOpen && <div className="mt-5 max-w-xl rounded-xl border border-[#f5d27a]/20 bg-black/20 p-4 text-sm leading-6 text-white/65"><p className="font-medium text-[#f5d27a]">SULTAN · Authority & Empowerment</p><p className="mt-2">A transparent local command surface for seven senses, 114Hz synchronization, resilient infrastructure, and user-authorized Pi utility. No funds move without an explicit wallet approval.</p></div>}
+            {error && <div role="alert" className="mt-4 flex flex-wrap items-center gap-3 text-xs text-rose-300"><span>{error}</span><button type="button" className="underline underline-offset-4" onClick={() => setError(null)}>Dismiss</button></div>}
           </div>
           <div className="relative mx-auto aspect-square w-full max-w-[390px]">
             <div className="sultan-spin-slow absolute inset-5 rounded-full border border-[#f5d27a]/20 border-dashed" /><div className="sultan-spin-slow absolute inset-16 rounded-full border border-violet-300/20" style={{ animationDirection: "reverse" }} />
