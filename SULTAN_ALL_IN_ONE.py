@@ -6,6 +6,11 @@ and wealth-gate status without claiming custody of user funds.
 
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+from typing import Final
+
+
+SYSTEM_ID: Final = "SULTAN_UNIVERSAL_OS"
+COMMAND_TRIGGER: Final = "KUN FAYAKUN YAS"
 
 
 @dataclass
