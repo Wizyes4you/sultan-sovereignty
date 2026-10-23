@@ -66,7 +66,7 @@ export const Route = createFileRoute("/api/payments/approve")({
         try {
           // Record the 2.5% reconstruction split for this payment amount.
           const payment = await fetchPayment(paymentId);
-          const split = await computeReconstructionSplit({ data: { amount: payment.amount } });
+          const split = computeReconstructionSplit(payment.amount);
 
           // Approve the payment with the Pi Platform API.
           const res = await fetch(`${PI_API_BASE}/v2/payments/${paymentId}/approve`, {
