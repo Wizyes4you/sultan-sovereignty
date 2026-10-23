@@ -66,7 +66,7 @@ function Index() {
   ];
 
   return (
-    <div className="sultan-bg min-h-screen overflow-hidden text-white">
+    <div dir="rtl" className="sultan-bg min-h-screen overflow-hidden text-white">
       <div className="pointer-events-none fixed inset-0 opacity-30 [background-image:linear-gradient(rgba(245,210,122,.06)_1px,transparent_1px),linear-gradient(90deg,rgba(245,210,122,.06)_1px,transparent_1px)] [background-size:72px_72px]" />
       <header className="relative z-10 flex items-center justify-between border-b border-white/10 px-5 py-5 lg:px-12">
         <div className="flex items-center gap-3">
